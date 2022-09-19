@@ -63,156 +63,156 @@ class _PesanRuangState extends State<PesanRuang> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Daftar Pemesanan Ruang"),
-        ),
-        body: ListView(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                children: [
-                  InputForm(
-                    controller: controllerJudul,
-                    label: "Judul Acara",
-                    hint: "Masukkan Judul Acara",
-                  ),
-                  const Padding(padding: EdgeInsets.only(top: 20.0)),
-                  DropdownButtonFormField(
-                    decoration: InputDecoration(
-                        labelText: "Ruang",
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0))),
-                    value: _ruang,
-                    items: ruang.map((value) {
-                      return DropdownMenuItem(
-                        child: Text(value),
-                        value: value,
-                      );
-                    }).toList(),
-                    onChanged: (value) {
+      appBar: AppBar(
+        title: const Text("Daftar Pemesanan Ruang"),
+      ),
+      body: ListView(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              children: [
+                InputForm(
+                  controller: controllerJudul,
+                  label: "Judul Acara",
+                  hint: "Masukkan Judul Acara",
+                ),
+                const Padding(padding: EdgeInsets.only(top: 20.0)),
+                DropdownButtonFormField(
+                  decoration: InputDecoration(
+                      labelText: "Ruang",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0))),
+                  value: _ruang,
+                  items: ruang.map((value) {
+                    return DropdownMenuItem(
+                      child: Text(value),
+                      value: value,
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _ruang = value.toString();
+                    });
+                  },
+                ),
+                const Padding(padding: EdgeInsets.only(top: 20.0)),
+                InputForm(
+                  controller: controllerDesk,
+                  maxLines: 3,
+                  label: "Deskripsi Acara",
+                  hint: "Masukkan Deskripsi Acara",
+                ),
+                const Padding(padding: EdgeInsets.only(top: 20.0)),
+                InputDateTime(
+                  icon: Icons.calendar_today,
+                  label: (date == DateTime(0))
+                      ? '  Tanggal'
+                      : '  ${date.day}-${date.month}-${date.year}',
+                  onPressed: () {
+                    showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1111),
+                      lastDate: DateTime(2222),
+                    ).then((value) {
                       setState(() {
-                        _ruang = value.toString();
+                        date = value!;
                       });
-                    },
-                  ),
-                  const Padding(padding: EdgeInsets.only(top: 20.0)),
-                  InputForm(
-                    controller: controllerDesk,
-                    maxLines: 3,
-                    label: "Deskripsi Acara",
-                    hint: "Masukkan Deskripsi Acara",
-                  ),
-                  const Padding(padding: EdgeInsets.only(top: 20.0)),
-                  InputDateTime(
-                    icon: Icons.calendar_today,
-                    label: (date == DateTime(0))
-                        ? '  Tanggal'
-                        : '  ${date.day}-${date.month}-${date.year}',
-                    onPressed: () {
-                      showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1111),
-                        lastDate: DateTime(2222),
-                      ).then((value) {
-                        setState(() {
-                          date = value!;
-                        });
-                      });
-                    },
-                  ),
-                  const Padding(padding: EdgeInsets.only(top: 20.0)),
-                  InputDateTime(
-                    icon: Icons.more_time,
-                    label: (firstTime == const TimeOfDay(hour: 0, minute: 0))
-                        ? "  Jam Mulai"
-                        : '  ${firstTime.hour} : ${firstTime.minute}',
-                    onPressed: () {
-                      showTimePicker(
-                        context: context,
-                        initialTime: const TimeOfDay(hour: 0, minute: 0),
-                      ).then((value) {
-                        setState(() {
-                          firstTime = value!;
-                        });
-                      });
-                    },
-                  ),
-                  const Padding(padding: EdgeInsets.only(top: 20.0)),
-                  InputDateTime(
-                    icon: Icons.more_time,
-                    label: (lastTime == const TimeOfDay(hour: 0, minute: 0))
-                        ? "  Jam Selesai"
-                        : '  ${lastTime.hour} : ${lastTime.minute}',
-                    onPressed: () {
-                      showTimePicker(
-                        context: context,
-                        initialTime: const TimeOfDay(hour: 0, minute: 0),
-                      ).then((value) {
-                        setState(() {
-                          lastTime = value!;
-                        });
-                      });
-                    },
-                  ),
-                  const Padding(padding: EdgeInsets.only(top: 20.0)),
-                  InputForm(
-                    controller: controllerNomor,
-                    label: "Nomor HP",
-                    hint: "Masukkan Nomor HP",
-                  ),
-                  const Padding(padding: EdgeInsets.only(top: 20.0)),
-                  DropdownButtonFormField(
-                    decoration: InputDecoration(
-                        labelText: "Status Dokumen",
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0))),
-                    value: _dokumen,
-                    items: dokumen.map((value) {
-                      return DropdownMenuItem(
-                        child: Text(value),
-                        value: value,
-                      );
-                    }).toList(),
-                    onChanged: (value) {
+                    });
+                  },
+                ),
+                const Padding(padding: EdgeInsets.only(top: 20.0)),
+                InputDateTime(
+                  icon: Icons.more_time,
+                  label: (firstTime == const TimeOfDay(hour: 0, minute: 0))
+                      ? "  Jam Mulai"
+                      : '  ${firstTime.hour} : ${firstTime.minute}',
+                  onPressed: () {
+                    showTimePicker(
+                      context: context,
+                      initialTime: const TimeOfDay(hour: 0, minute: 0),
+                    ).then((value) {
                       setState(() {
-                        _dokumen = value.toString();
+                        firstTime = value!;
                       });
-                    },
-                  ),
-                  const Padding(padding: EdgeInsets.only(top: 20.0)),
-                  InputDateTime(
-                    icon: Icons.upload_file,
-                    label: "  $fileName",
-                    onPressed: () async {
-                      final result = await FilePicker.platform.pickFiles();
+                    });
+                  },
+                ),
+                const Padding(padding: EdgeInsets.only(top: 20.0)),
+                InputDateTime(
+                  icon: Icons.more_time,
+                  label: (lastTime == const TimeOfDay(hour: 0, minute: 0))
+                      ? "  Jam Selesai"
+                      : '  ${lastTime.hour} : ${lastTime.minute}',
+                  onPressed: () {
+                    showTimePicker(
+                      context: context,
+                      initialTime: const TimeOfDay(hour: 0, minute: 0),
+                    ).then((value) {
+                      setState(() {
+                        lastTime = value!;
+                      });
+                    });
+                  },
+                ),
+                const Padding(padding: EdgeInsets.only(top: 20.0)),
+                InputForm(
+                  controller: controllerNomor,
+                  label: "Nomor HP",
+                  hint: "Masukkan Nomor HP",
+                ),
+                const Padding(padding: EdgeInsets.only(top: 20.0)),
+                DropdownButtonFormField(
+                  decoration: InputDecoration(
+                      labelText: "Status Dokumen",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20.0))),
+                  value: _dokumen,
+                  items: dokumen.map((value) {
+                    return DropdownMenuItem(
+                      child: Text(value),
+                      value: value,
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _dokumen = value.toString();
+                    });
+                  },
+                ),
+                const Padding(padding: EdgeInsets.only(top: 20.0)),
+                InputDateTime(
+                  icon: Icons.upload_file,
+                  label: "  $fileName",
+                  onPressed: () async {
+                    final result = await FilePicker.platform.pickFiles();
 
-                      if (result != null) {
-                        final file = result.files.first;
-                        setState(() {
-                          fileName = file.name;
-                        });
-                      }
-                    },
-                  ),
-                ],
-              ),
+                    if (result != null) {
+                      final file = result.files.first;
+                      setState(() {
+                        fileName = file.name;
+                      });
+                    }
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-        bottomNavigationBar: Container(
-          height: 48.0,
-          child: RaisedButton(
-            color: Colors.blue,
-            child: const Text(
-              "Pesan",
-              style: TextStyle(fontSize: 18.0, color: Colors.white),
-            ),
-            onPressed: () {
-              kirimValue();
-            },
           ),
-        ));
+        ],
+      ),
+      bottomNavigationBar: Container(
+        height: 48.0,
+        child: ElevatedButton(
+          onPressed: () {
+            kirimValue();
+          },
+          child: const Text(
+            "Pesan",
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
+          ),
+        ),
+      ),
+    );
   }
 }
