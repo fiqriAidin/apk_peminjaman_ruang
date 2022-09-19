@@ -15,7 +15,7 @@ class _ListPesananUserState extends State<ListPesananUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Daftar Pesan"),
+        title: const Text("Daftar Pesanan"),
         actions: [
           IconButton(
               onPressed: () {
