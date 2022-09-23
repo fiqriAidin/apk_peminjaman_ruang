@@ -207,6 +207,12 @@ class _PesanRuangState extends State<PesanRuang> {
           onPressed: () {
             kirimValue();
           },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).primaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0),
+            ),
+          ),
           child: const Text(
             "Pesan",
             style: TextStyle(fontSize: 18.0, color: Colors.white),
