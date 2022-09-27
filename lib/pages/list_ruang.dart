@@ -16,6 +16,11 @@ class _ListRuangState extends State<ListRuang> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("List Ruang"),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(25),
+              bottomRight: Radius.circular(25)),
+        ),
         actions: [
           IconButton(
               onPressed: () {

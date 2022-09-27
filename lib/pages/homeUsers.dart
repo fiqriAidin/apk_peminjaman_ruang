@@ -38,14 +38,26 @@ class _HomeUsersState extends State<HomeUsers>
         ],
       ),
       bottomNavigationBar: Material(
-        color: Colors.blue,
-        child: TabBar(
-          controller: controller,
-          tabs: const [
-            Tab(icon: Icon(Icons.home)),
-            Tab(icon: Icon(Icons.storage_outlined)),
-            Tab(icon: Icon(Icons.file_copy_sharp)),
-          ],
+        child: Container(
+          height: 48,
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: TabBar(
+            indicator: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.black,
+            controller: controller,
+            tabs: const [
+              Tab(icon: Icon(Icons.home)),
+              Tab(icon: Icon(Icons.storage_outlined)),
+              Tab(icon: Icon(Icons.file_copy_sharp)),
+            ],
+          ),
         ),
       ),
     );

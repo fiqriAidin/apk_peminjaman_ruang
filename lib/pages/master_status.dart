@@ -45,6 +45,11 @@ class MasterStatus extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Master Status"),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(25),
+              bottomRight: Radius.circular(25)),
+        ),
         actions: [
           IconButton(
               onPressed: () {

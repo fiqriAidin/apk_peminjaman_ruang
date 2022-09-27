@@ -80,7 +80,14 @@ class Beranda extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Peminjaman Ruang PENS"),
+        title: const Text(
+          "Peminjaman Ruang PENS",
+        ),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(25),
+              bottomRight: Radius.circular(25)),
+        ),
         actions: [
           IconButton(
               onPressed: () {
@@ -91,7 +98,6 @@ class Beranda extends StatelessWidget {
               },
               icon: const Icon(
                 Icons.logout,
-                color: Colors.white,
               ))
         ],
       ),
@@ -103,7 +109,7 @@ class Beranda extends StatelessWidget {
             child: Text(
               "Statistik Peminjaman",
               style: TextStyle(
-                fontSize: 22,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
