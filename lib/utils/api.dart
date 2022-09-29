@@ -98,3 +98,17 @@ Future<List> getDataOnePemesanan(id) async {
     throw Exception('Failed to load data');
   }
 }
+
+void createDataStatus(name) {
+  var url = Uri.parse(
+      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=create_status');
+  http.post(url, body: {
+    "name": name,
+  });
+}
+
+void deleteDataStatus(id) {
+  var url = Uri.parse(
+      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=delete_status&id=${id}');
+  http.delete(url);
+}

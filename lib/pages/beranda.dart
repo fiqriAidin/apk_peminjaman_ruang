@@ -103,10 +103,34 @@ class Beranda extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          Card(
+            margin: EdgeInsets.all(15),
+            child: Container(
+              padding: EdgeInsets.all(15),
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.topLeft,
+                    child: const Text(
+                      "Notifikasi Terbaru",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const ListNotif(),
+                  const ListNotif(),
+                  const ListNotif(),
+                  const ListNotif(),
+                ],
+              ),
+            ),
+          ),
           Padding(padding: EdgeInsets.only(top: 20)),
           Container(
-            padding: EdgeInsets.only(left: 15, bottom: 15),
-            child: Text(
+            padding: EdgeInsets.only(left: 30, bottom: 15),
+            child: const Text(
               "Statistik Peminjaman",
               style: TextStyle(
                 fontSize: 20,
@@ -120,7 +144,7 @@ class Beranda extends StatelessWidget {
               PieChart(
                 dataMap: dataMap1,
                 animationDuration: Duration(milliseconds: 1000),
-                chartLegendSpacing: 10,
+                chartLegendSpacing: 5,
                 chartRadius: MediaQuery.of(context).size.width / 3.8,
                 chartValuesOptions: ChartValuesOptions(
                   showChartValuesInPercentage: true,
@@ -129,7 +153,7 @@ class Beranda extends StatelessWidget {
               PieChart(
                 dataMap: dataMap2,
                 animationDuration: Duration(milliseconds: 1000),
-                chartLegendSpacing: 10,
+                chartLegendSpacing: 5,
                 chartRadius: MediaQuery.of(context).size.width / 3.8,
                 chartValuesOptions: ChartValuesOptions(
                   showChartValuesInPercentage: true,
@@ -183,6 +207,33 @@ class Beranda extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class ListNotif extends StatelessWidget {
+  const ListNotif({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Padding(padding: EdgeInsets.only(top: 10)),
+        Container(
+          alignment: Alignment.topLeft,
+          child: const Text(
+            "22-02-2022 20.00 s/d 22.00",
+            style: TextStyle(fontSize: 14.0, color: Colors.grey),
+          ),
+        ),
+        Container(
+          alignment: Alignment.topLeft,
+          child: const Text(
+            "Peminjaman ruang Fiqri Aidin di setujui",
+            style: TextStyle(fontSize: 16.0),
+          ),
+        ),
+      ],
     );
   }
 }

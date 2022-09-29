@@ -3,8 +3,17 @@ import 'package:peminjaman_ruang/pages/login.dart';
 import 'package:peminjaman_ruang/components/inputForm.dart';
 import 'package:peminjaman_ruang/utils/api.dart';
 
-class MasterStatus extends StatelessWidget {
+class MasterStatus extends StatefulWidget {
   const MasterStatus({Key? key}) : super(key: key);
+
+  @override
+  State<MasterStatus> createState() => _MasterStatusState();
+}
+
+class _MasterStatusState extends State<MasterStatus> {
+  TextEditingController controllerName = TextEditingController();
+
+  var itemCount = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +22,7 @@ class MasterStatus extends StatelessWidget {
         title: const Text("Input Data Master Status"),
         content: Container(
           child: InputForm(
+            controller: controllerName,
             label: "Master Status",
             hint: "Input nama status",
           ),
@@ -20,17 +30,21 @@ class MasterStatus extends StatelessWidget {
         actions: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Colors.red,
+              backgroundColor: Colors.red,
             ),
             child: const Text("Tutup"),
             onPressed: () => Navigator.of(context).pop(),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Colors.green,
+              backgroundColor: Colors.green,
             ),
             child: const Text("Simpan"),
-            onPressed: () {},
+            onPressed: () {
+              createDataStatus(controllerName.text);
+              Navigator.of(context).pop();
+              setState(() {});
+            },
           ),
         ],
       );
@@ -64,20 +78,27 @@ class MasterStatus extends StatelessWidget {
               ))
         ],
       ),
-      body: FutureBuilder(
-        future: getDataStatus(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) print(snapshot.error);
-
-          print(snapshot.data);
-          return snapshot.hasData
-              ? ListValue(
-                  list: snapshot.data,
-                )
-              : const Center(
-                  child: CircularProgressIndicator(),
-                );
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await Future.delayed(Duration(milliseconds: 1500));
+          setState(() {
+            itemCount = itemCount + 1;
+          });
         },
+        child: FutureBuilder(
+          future: getDataStatus(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) print(snapshot.error);
+
+            return snapshot.hasData
+                ? ListValue(
+                    list: snapshot.data,
+                  )
+                : const Center(
+                    child: CircularProgressIndicator(),
+                  );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         icon: const Icon(Icons.add_comment),
@@ -100,6 +121,40 @@ class ListValue extends StatefulWidget {
 }
 
 class _ListValueState extends State<ListValue> {
+  void confirm(index, data) {
+    AlertDialog alertDialog = AlertDialog(
+      content: Text("Apakah kamu yakin ingin menghapus ${data[index]["name"]}"),
+      actions: [
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text("Batal"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.yellow,
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            deleteDataStatus(data[index]["id"]);
+            Navigator.pop(context);
+          },
+          child: Text("Delete"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+          ),
+        ),
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alertDialog;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -124,7 +179,7 @@ class _ListValueState extends State<ListValue> {
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.amber,
+                          backgroundColor: Colors.amber,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50),
                           ),
@@ -135,13 +190,15 @@ class _ListValueState extends State<ListValue> {
                       const Padding(padding: EdgeInsets.only(left: 5.0)),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
+                          backgroundColor: Colors.red,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50),
                           ),
                         ),
                         child: const Icon(Icons.delete),
-                        onPressed: () {},
+                        onPressed: () {
+                          confirm(index, widget.list);
+                        },
                       ),
                     ],
                   ),
