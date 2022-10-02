@@ -60,6 +60,44 @@ class _PesanRuangState extends State<PesanRuang> {
     );
   }
 
+  selectDate(BuildContext context) async {
+    final DateTime? selected = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1111),
+      lastDate: DateTime(2222),
+    );
+    if (selected != null && selected != date)
+      setState(() {
+        date = selected;
+      });
+    print(date);
+    print(date.millisecondsSinceEpoch);
+  }
+
+  selectFirstTime(BuildContext context) async {
+    final TimeOfDay? selected = await showTimePicker(
+      context: context,
+      initialTime: const TimeOfDay(hour: 0, minute: 0),
+    );
+    if (selected != null && selected != date)
+      setState(() {
+        firstTime = selected;
+      });
+    print(firstTime);
+  }
+
+  selectLastTime(BuildContext context) async {
+    final TimeOfDay? selected = await showTimePicker(
+      context: context,
+      initialTime: const TimeOfDay(hour: 0, minute: 0),
+    );
+    if (selected != null && selected != date)
+      setState(() {
+        lastTime = selected;
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,16 +153,7 @@ class _PesanRuangState extends State<PesanRuang> {
                       ? '  Tanggal'
                       : '  ${date.day}-${date.month}-${date.year}',
                   onPressed: () {
-                    showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1111),
-                      lastDate: DateTime(2222),
-                    ).then((value) {
-                      setState(() {
-                        date = value!;
-                      });
-                    });
+                    selectDate(context);
                   },
                 ),
                 const Padding(padding: EdgeInsets.only(top: 20.0)),
@@ -134,14 +163,7 @@ class _PesanRuangState extends State<PesanRuang> {
                       ? "  Jam Mulai"
                       : '  ${firstTime.hour} : ${firstTime.minute}',
                   onPressed: () {
-                    showTimePicker(
-                      context: context,
-                      initialTime: const TimeOfDay(hour: 0, minute: 0),
-                    ).then((value) {
-                      setState(() {
-                        firstTime = value!;
-                      });
-                    });
+                    selectFirstTime(context);
                   },
                 ),
                 const Padding(padding: EdgeInsets.only(top: 20.0)),
@@ -151,14 +173,7 @@ class _PesanRuangState extends State<PesanRuang> {
                       ? "  Jam Selesai"
                       : '  ${lastTime.hour} : ${lastTime.minute}',
                   onPressed: () {
-                    showTimePicker(
-                      context: context,
-                      initialTime: const TimeOfDay(hour: 0, minute: 0),
-                    ).then((value) {
-                      setState(() {
-                        lastTime = value!;
-                      });
-                    });
+                    selectLastTime(context);
                   },
                 ),
                 const Padding(padding: EdgeInsets.only(top: 20.0)),

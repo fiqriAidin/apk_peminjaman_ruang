@@ -13,6 +13,34 @@ class _CreateRuangState extends State<CreateRuang> {
   DateTime firstDate = DateTime(0);
   DateTime lastDate = DateTime(0);
 
+  selectFirstDate(BuildContext context) async {
+    final DateTime? selected = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1111),
+      lastDate: DateTime(2222),
+    );
+    if (selected != null && selected != firstDate)
+      setState(() {
+        firstDate = selected;
+      });
+    print(firstDate.millisecondsSinceEpoch);
+  }
+
+  selectLastDate(BuildContext context) async {
+    final DateTime? selected = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1111),
+      lastDate: DateTime(2222),
+    );
+    if (selected != null && selected != lastDate)
+      setState(() {
+        lastDate = selected;
+      });
+    print(lastDate.millisecondsSinceEpoch);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,16 +80,7 @@ class _CreateRuangState extends State<CreateRuang> {
                       ? '  Tanggal Awal Off'
                       : '  ${firstDate.day}-${firstDate.month}-${firstDate.year}',
                   onPressed: () {
-                    showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1111),
-                      lastDate: DateTime(2222),
-                    ).then((value) {
-                      setState(() {
-                        firstDate = value!;
-                      });
-                    });
+                    selectFirstDate(context);
                   },
                 ),
                 const Padding(padding: EdgeInsets.only(top: 20.0)),
@@ -71,16 +90,7 @@ class _CreateRuangState extends State<CreateRuang> {
                       ? '  Tanggal Akhir Off'
                       : '  ${lastDate.day}-${lastDate.month}-${lastDate.year}',
                   onPressed: () {
-                    showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1111),
-                      lastDate: DateTime(2222),
-                    ).then((value) {
-                      setState(() {
-                        lastDate = value!;
-                      });
-                    });
+                    selectLastDate(context);
                   },
                 ),
                 const Padding(padding: EdgeInsets.only(top: 20.0)),
