@@ -107,6 +107,15 @@ void createDataStatus(name) {
   });
 }
 
+void updateDataStatus(id, name) {
+  var url = Uri.parse(
+      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=update_status');
+  http.post(url, body: {
+    "id": id,
+    "name": name,
+  });
+}
+
 void deleteDataStatus(id) {
   var url = Uri.parse(
       'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=delete_status&id=${id}');

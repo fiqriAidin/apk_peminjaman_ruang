@@ -33,7 +33,12 @@ class _MasterStatusState extends State<MasterStatus> {
               backgroundColor: Colors.red,
             ),
             child: const Text("Tutup"),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              setState(() {
+                controllerName.text = "";
+              });
+              Navigator.of(context).pop();
+            },
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -43,7 +48,9 @@ class _MasterStatusState extends State<MasterStatus> {
             onPressed: () {
               createDataStatus(controllerName.text);
               Navigator.of(context).pop();
-              setState(() {});
+              setState(() {
+                controllerName.text = "";
+              });
             },
           ),
         ],
@@ -121,25 +128,27 @@ class ListValue extends StatefulWidget {
 }
 
 class _ListValueState extends State<ListValue> {
-  void confirm(index, data) {
+  TextEditingController controllerName = TextEditingController();
+
+  void confirm(id, name) {
     AlertDialog alertDialog = AlertDialog(
-      content: Text("Apakah kamu yakin ingin menghapus ${data[index]["name"]}"),
+      content: Text("Apakah kamu yakin ingin menghapus ${name}"),
       actions: [
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text("Batal"),
+          child: const Text("Batal"),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.yellow,
           ),
         ),
         ElevatedButton(
           onPressed: () {
-            deleteDataStatus(data[index]["id"]);
+            deleteDataStatus(id);
             Navigator.pop(context);
           },
-          child: Text("Delete"),
+          child: const Text("Delete"),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red,
           ),
@@ -151,6 +160,56 @@ class _ListValueState extends State<ListValue> {
       context: context,
       builder: (BuildContext context) {
         return alertDialog;
+      },
+    );
+  }
+
+  void updateValue(id, name) {
+    setState(() {
+      controllerName.text = name;
+    });
+
+    AlertDialog alert = AlertDialog(
+      title: const Text("Input Data Master Status"),
+      content: Container(
+        child: InputForm(
+          controller: controllerName,
+          label: "Master Status",
+          hint: "Input nama status",
+        ),
+      ),
+      actions: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+          ),
+          child: const Text("Tutup"),
+          onPressed: () {
+            setState(() {
+              controllerName.text = "";
+            });
+            Navigator.of(context).pop();
+          },
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+          ),
+          child: const Text("Simpan"),
+          onPressed: () {
+            updateDataStatus(id, controllerName.text);
+            Navigator.of(context).pop();
+            setState(() {
+              controllerName.text = "";
+            });
+          },
+        ),
+      ],
+    );
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
       },
     );
   }
@@ -185,7 +244,12 @@ class _ListValueState extends State<ListValue> {
                           ),
                         ),
                         child: const Icon(Icons.edit),
-                        onPressed: () {},
+                        onPressed: () {
+                          updateValue(
+                            widget.list[index]["id"],
+                            widget.list[index]["name"],
+                          );
+                        },
                       ),
                       const Padding(padding: EdgeInsets.only(left: 5.0)),
                       ElevatedButton(
@@ -197,7 +261,10 @@ class _ListValueState extends State<ListValue> {
                         ),
                         child: const Icon(Icons.delete),
                         onPressed: () {
-                          confirm(index, widget.list);
+                          confirm(
+                            widget.list[index]["id"],
+                            widget.list[index]["name"],
+                          );
                         },
                       ),
                     ],
