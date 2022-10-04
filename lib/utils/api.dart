@@ -18,21 +18,6 @@ Future<List> getDataRuang() async {
   }
 }
 
-// mengambil salah satu data ruang
-Future<List> getDataOneRuang(id) async {
-  final response = await http.get(Uri.parse(
-      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=get_one_ruang&id=${id}'));
-  Map<String, dynamic> map = json.decode(response.body);
-  List<dynamic> data = map["result"];
-
-  if (response.statusCode == 200) {
-    // print(data);
-    return data;
-  } else {
-    throw Exception('Failed to load data');
-  }
-}
-
 // mengambil seluruh data status
 Future<List> getDataStatus() async {
   final response = await http.get(Uri.parse(
@@ -84,21 +69,7 @@ Future<List> getDataPemesanan() async {
   }
 }
 
-// mengambil salah satu data pemesanan
-Future<List> getDataOnePemesanan(id) async {
-  final response = await http.get(Uri.parse(
-      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=get_one_pemesanan&id=${id}'));
-  Map<String, dynamic> map = json.decode(response.body);
-  List<dynamic> data = map["result"];
-
-  if (response.statusCode == 200) {
-    print(data);
-    return data;
-  } else {
-    throw Exception('Failed to load data');
-  }
-}
-
+// membuat data status baru
 void createDataStatus(name) {
   var url = Uri.parse(
       'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=create_status');
@@ -107,6 +78,21 @@ void createDataStatus(name) {
   });
 }
 
+// membuat data ruang baru
+void createDataRuang(code, name, description, firstTimeOff, lastTimeOff) async {
+  var url = Uri.parse(
+      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=create_ruang');
+  http.post(url, body: {
+    "code": code,
+    "name": name,
+    "description": description,
+    "firstTimeOff": firstTimeOff,
+    "lastTimeOff": lastTimeOff,
+    "status": "open",
+  });
+}
+
+// mengupdate data status
 void updateDataStatus(id, name) {
   var url = Uri.parse(
       'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=update_status');
@@ -116,8 +102,32 @@ void updateDataStatus(id, name) {
   });
 }
 
+// mengupdate data ruang
+void updateDataRuang(
+    id, code, name, description, firstTimeOff, lastTimeOff, status) {
+  var url = Uri.parse(
+      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=update_ruang');
+  http.post(url, body: {
+    "id": id,
+    "code": code,
+    "name": name,
+    "description": description,
+    "firstTimeOff": firstTimeOff,
+    "lastTimeOff": lastTimeOff,
+    "status": status,
+  });
+}
+
+// menghapus data status
 void deleteDataStatus(id) {
   var url = Uri.parse(
       'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=delete_status&id=${id}');
+  http.delete(url);
+}
+
+// menghapus data ruang
+void deleteDataRuang(id) {
+  var url = Uri.parse(
+      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=delete_ruang&id=${id}');
   http.delete(url);
 }

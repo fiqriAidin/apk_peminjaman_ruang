@@ -1,9 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:peminjaman_ruang/components/inputDateTime.dart';
 import 'package:peminjaman_ruang/components/inputForm.dart';
+import 'package:peminjaman_ruang/pages/list_ruang.dart';
+import 'package:peminjaman_ruang/utils/api.dart';
 
 class CreateRuang extends StatefulWidget {
-  const CreateRuang({Key? key}) : super(key: key);
+  CreateRuang(
+      {Key? key,
+      this.id,
+      this.code,
+      this.name,
+      this.description,
+      this.firstTimeOff,
+      this.lastTimeOff,
+      this.status})
+      : super(key: key);
+  var id;
+  var code;
+  var name;
+  var description;
+  var firstTimeOff;
+  var lastTimeOff;
+  var status;
 
   @override
   _CreateRuangState createState() => _CreateRuangState();
@@ -12,6 +30,10 @@ class CreateRuang extends StatefulWidget {
 class _CreateRuangState extends State<CreateRuang> {
   DateTime firstDate = DateTime(0);
   DateTime lastDate = DateTime(0);
+
+  TextEditingController controllerCode = TextEditingController();
+  TextEditingController controllerName = TextEditingController();
+  TextEditingController controllerDesc = TextEditingController();
 
   selectFirstDate(BuildContext context) async {
     final DateTime? selected = await showDatePicker(
@@ -24,7 +46,6 @@ class _CreateRuangState extends State<CreateRuang> {
       setState(() {
         firstDate = selected;
       });
-    print(firstDate.millisecondsSinceEpoch);
   }
 
   selectLastDate(BuildContext context) async {
@@ -38,7 +59,50 @@ class _CreateRuangState extends State<CreateRuang> {
       setState(() {
         lastDate = selected;
       });
-    print(lastDate.millisecondsSinceEpoch);
+  }
+
+  void createNewRuang() {
+    createDataRuang(
+      controllerCode.text,
+      controllerName.text,
+      controllerDesc.text,
+      "${firstDate.millisecondsSinceEpoch}",
+      "${lastDate.millisecondsSinceEpoch}",
+    );
+
+    Navigator.pop(context);
+  }
+
+  void updateRuang() {
+    updateDataRuang(
+      widget.id,
+      controllerCode.text,
+      controllerName.text,
+      controllerDesc.text,
+      "${firstDate.millisecondsSinceEpoch}",
+      "${lastDate.millisecondsSinceEpoch}",
+      widget.status,
+    );
+
+    Navigator.pop(context);
+  }
+
+  @override
+  void initState() {
+    // print(widget.id);
+    if (widget.id != null) {
+      setState(() {
+        controllerCode.text = widget.code;
+        controllerName.text = widget.name;
+        controllerDesc.text = widget.description;
+        firstDate =
+            DateTime.fromMillisecondsSinceEpoch(int.parse(widget.firstTimeOff));
+        lastDate =
+            DateTime.fromMillisecondsSinceEpoch(int.parse(widget.lastTimeOff));
+      });
+    }
+
+    super.initState();
   }
 
   @override
@@ -59,16 +123,19 @@ class _CreateRuangState extends State<CreateRuang> {
             child: Column(
               children: [
                 InputForm(
+                  controller: controllerCode,
                   label: "Kode Ruang",
                   hint: "Masukkan Kode Ruang",
                 ),
                 const Padding(padding: EdgeInsets.only(top: 20.0)),
                 InputForm(
+                  controller: controllerName,
                   label: "Nama Ruang",
                   hint: "Masukkan Nama Ruang",
                 ),
                 const Padding(padding: EdgeInsets.only(top: 20.0)),
                 InputForm(
+                  controller: controllerDesc,
                   maxLines: 3,
                   label: "Deskripsi Ruang",
                   hint: "Masukkan Deskripsi/Informasi Ruang",
@@ -102,7 +169,13 @@ class _CreateRuangState extends State<CreateRuang> {
       bottomNavigationBar: Container(
         height: 48.0,
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            if (widget.id == null) {
+              createNewRuang();
+            } else {
+              updateRuang();
+            }
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).primaryColor,
             shape: RoundedRectangleBorder(

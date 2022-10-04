@@ -11,6 +11,14 @@ class ListRuang extends StatefulWidget {
 }
 
 class _ListRuangState extends State<ListRuang> {
+  var itemCount = 0;
+
+  @override
+  void initState() {
+    // print("Regres hal ruang");
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,19 +43,27 @@ class _ListRuangState extends State<ListRuang> {
               ))
         ],
       ),
-      body: FutureBuilder(
-        future: getDataRuang(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) print(snapshot.error);
-
-          return snapshot.hasData
-              ? ListValue(
-                  list: snapshot.data,
-                )
-              : const Center(
-                  child: CircularProgressIndicator(),
-                );
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await Future.delayed(Duration(milliseconds: 1500));
+          setState(() {
+            itemCount = itemCount + 1;
+          });
         },
+        child: FutureBuilder(
+          future: getDataRuang(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) print(snapshot.error);
+
+            return snapshot.hasData
+                ? ListValue(
+                    list: snapshot.data,
+                  )
+                : const Center(
+                    child: CircularProgressIndicator(),
+                  );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         icon: const Icon(Icons.add),
@@ -55,7 +71,7 @@ class _ListRuangState extends State<ListRuang> {
         backgroundColor: Colors.green,
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const CreateRuang();
+            return CreateRuang();
           }));
         },
       ),
@@ -72,6 +88,47 @@ class ListValue extends StatefulWidget {
 }
 
 class _ListValueState extends State<ListValue> {
+  void confirm(id, name) {
+    AlertDialog alertDialog = AlertDialog(
+      content: Text("Apakah kamu yakin ingin menghapus ${name}"),
+      actions: [
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text("Batal"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.yellow,
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            deleteDataRuang(id);
+            Navigator.pop(context);
+          },
+          child: const Text("Delete"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+          ),
+        ),
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alertDialog;
+      },
+    );
+  }
+
+  String convertDate(time) {
+    var date = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+    var result = "${date.day}-${date.month}-${date.year}";
+
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -143,7 +200,7 @@ class _ListValueState extends State<ListValue> {
                             style: TextStyle(fontSize: 18.0),
                           ),
                           Text(
-                            widget.list[index]["firstTimeOff"],
+                            convertDate(widget.list[index]["firstTimeOff"]),
                             style: const TextStyle(fontSize: 18.0),
                           ),
                         ],
@@ -155,7 +212,7 @@ class _ListValueState extends State<ListValue> {
                             style: TextStyle(fontSize: 18.0),
                           ),
                           Text(
-                            widget.list[index]["lastTimeOff"],
+                            convertDate(widget.list[index]["lastTimeOff"]),
                             style: const TextStyle(fontSize: 18.0),
                           ),
                         ],
@@ -177,24 +234,45 @@ class _ListValueState extends State<ListValue> {
                         children: [
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.amber,
+                              backgroundColor: Colors.amber,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
                               ),
                             ),
                             child: const Icon(Icons.edit),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return CreateRuang(
+                                  id: widget.list[index]["id"],
+                                  code: widget.list[index]["code"],
+                                  name: widget.list[index]["name"],
+                                  description: widget.list[index]
+                                      ["description"],
+                                  firstTimeOff: widget.list[index]
+                                      ["firstTimeOff"],
+                                  lastTimeOff: widget.list[index]
+                                      ["lastTimeOff"],
+                                  status: widget.list[index]["status"],
+                                );
+                              }));
+                            },
                           ),
                           const Padding(padding: EdgeInsets.only(left: 5.0)),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.red,
+                              backgroundColor: Colors.red,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
                               ),
                             ),
                             child: const Icon(Icons.delete),
-                            onPressed: () {},
+                            onPressed: () {
+                              confirm(
+                                widget.list[index]["id"],
+                                widget.list[index]["name"],
+                              );
+                            },
                           ),
                         ],
                       ),
