@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 // mengambil seluruh data ruang
 Future<List> getDataRuang() async {
   final response = await http.get(Uri.parse(
-      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=get_ruang'));
+      'http://192.168.1.31/pinjam-ruang/API/api_view.php?apicall=get_ruang'));
   Map<String, dynamic> map = json.decode(response.body);
   List<dynamic> data = map["result"];
 
@@ -21,7 +21,7 @@ Future<List> getDataRuang() async {
 // mengambil seluruh data status
 Future<List> getDataStatus() async {
   final response = await http.get(Uri.parse(
-      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=get_status'));
+      'http://192.168.1.31/pinjam-ruang/API/api_view.php?apicall=get_status'));
   Map<String, dynamic> map = json.decode(response.body);
   List<dynamic> data = map["result"];
 
@@ -35,7 +35,7 @@ Future<List> getDataStatus() async {
 // mengambil seluruh data pemesanan
 Future<List> getDataPemesanan() async {
   final response = await http.get(Uri.parse(
-      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=get_pemesanan'));
+      'http://192.168.1.31/pinjam-ruang/API/api_view.php?apicall=get_pemesanan'));
   Map<String, dynamic> map = json.decode(response.body);
   List<dynamic> data = map["result"];
 
@@ -43,7 +43,7 @@ Future<List> getDataPemesanan() async {
     Map<String, dynamic> dataPesanan = {};
     for (var i = 0; i < data.length; i++) {
       final response = await http.get(Uri.parse(
-          'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=get_one_ruang&id=${data[i]["ruang"]}'));
+          'http://192.168.1.31/pinjam-ruang/API/api_view.php?apicall=get_one_ruang&id=${data[i]["ruang"]}'));
       Map<String, dynamic> map = json.decode(response.body);
       List<dynamic> dataRuang = map["result"];
 
@@ -72,7 +72,7 @@ Future<List> getDataPemesanan() async {
 // membuat data status baru
 void createDataStatus(name) {
   var url = Uri.parse(
-      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=create_status');
+      'http://192.168.1.31/pinjam-ruang/API/api_insert.php?apicall=create_status');
   http.post(url, body: {
     "name": name,
   });
@@ -81,7 +81,7 @@ void createDataStatus(name) {
 // membuat data ruang baru
 void createDataRuang(code, name, description, firstTimeOff, lastTimeOff) async {
   var url = Uri.parse(
-      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=create_ruang');
+      'http://192.168.1.31/pinjam-ruang/API/api_insert.php?apicall=create_ruang');
   http.post(url, body: {
     "code": code,
     "name": name,
@@ -95,7 +95,7 @@ void createDataRuang(code, name, description, firstTimeOff, lastTimeOff) async {
 // mengupdate data status
 void updateDataStatus(id, name) {
   var url = Uri.parse(
-      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=update_status');
+      'http://192.168.1.31/pinjam-ruang/API/api_update.php?apicall=update_status');
   http.post(url, body: {
     "id": id,
     "name": name,
@@ -106,7 +106,7 @@ void updateDataStatus(id, name) {
 void updateDataRuang(
     id, code, name, description, firstTimeOff, lastTimeOff, status) {
   var url = Uri.parse(
-      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=update_ruang');
+      'http://192.168.1.31/pinjam-ruang/API/api_update.php?apicall=update_ruang');
   http.post(url, body: {
     "id": id,
     "code": code,
@@ -121,13 +121,13 @@ void updateDataRuang(
 // menghapus data status
 void deleteDataStatus(id) {
   var url = Uri.parse(
-      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=delete_status&id=${id}');
+      'http://192.168.1.31/pinjam-ruang/API/api_delete.php?apicall=delete_status&id=${id}');
   http.delete(url);
 }
 
 // menghapus data ruang
 void deleteDataRuang(id) {
   var url = Uri.parse(
-      'http://192.168.1.31/pinjam-ruang/api/apiPinjamRuang.php?apicall=delete_ruang&id=${id}');
+      'http://192.168.1.31/pinjam-ruang/API/api_delete.php?apicall=delete_ruang&id=${id}');
   http.delete(url);
 }
