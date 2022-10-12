@@ -85,8 +85,8 @@ class _ListPesananState extends State<ListPesanan> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.white,
-                onPrimary: Colors.grey,
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.grey,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20)),
               ),
@@ -157,7 +157,7 @@ class _ListPesananState extends State<ListPesanan> {
                         style: ElevatedButton.styleFrom(
                           fixedSize:
                               Size(MediaQuery.of(context).size.width, 40),
-                          primary: Colors.amber,
+                          backgroundColor: Colors.amber,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50),
                           ),

@@ -53,7 +53,9 @@ class _ListRuangState extends State<ListRuang> {
         child: FutureBuilder(
           future: getDataRuang(),
           builder: (context, snapshot) {
-            if (snapshot.hasError) print(snapshot.error);
+            if (snapshot.hasError) {
+              print(snapshot.error);
+            }
 
             return snapshot.hasData
                 ? ListValue(
@@ -88,6 +90,33 @@ class ListValue extends StatefulWidget {
 }
 
 class _ListValueState extends State<ListValue> {
+  List<String> field = ["Semua Ruang", "Ruang Open", "Ruang Close"];
+  String _field = "Semua Ruang";
+  var newData = ([]);
+
+  @override
+  void initState() {
+    newData = widget.list;
+    // print(newData);
+    super.initState();
+  }
+
+  void filterData(String value) {
+    var result = [];
+    if (value == "all") {
+      result = widget.list;
+    } else {
+      result = widget.list
+          .where((element) => element["status"]
+              .toString()
+              .toLowerCase()
+              .contains(value.toLowerCase()))
+          .toList();
+    }
+    newData = result;
+  }
+
+  @override
   void confirm(id, name) {
     AlertDialog alertDialog = AlertDialog(
       content: Text("Apakah kamu yakin ingin menghapus ${name}"),
@@ -129,161 +158,210 @@ class _ListValueState extends State<ListValue> {
     return result;
   }
 
+  void viewDetail(id, name, code, descrition, firsTime, lastTime, status) {
+    AlertDialog alertDialog = AlertDialog(
+      content: Container(
+        height: 470,
+        child: Column(
+          children: [
+            Container(
+                alignment: Alignment.topLeft, child: Text("Nama Ruang :")),
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: 1),
+                ),
+              ),
+              padding: const EdgeInsets.all(5.0),
+              child: Text(name),
+            ),
+            const Padding(padding: EdgeInsets.only(top: 10.0)),
+            Container(
+                alignment: Alignment.topLeft, child: Text("Code Ruang :")),
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: 1),
+                ),
+              ),
+              padding: const EdgeInsets.all(5.0),
+              child: Text(code),
+            ),
+            const Padding(padding: EdgeInsets.only(top: 10.0)),
+            Container(alignment: Alignment.topLeft, child: Text("Deskripsi :")),
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: 1),
+                ),
+              ),
+              padding: const EdgeInsets.all(5.0),
+              child: Text(descrition),
+            ),
+            const Padding(padding: EdgeInsets.only(top: 10.0)),
+            Container(
+                alignment: Alignment.topLeft,
+                child: Text("Tanggal Awal Off :")),
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: 1),
+                ),
+              ),
+              padding: const EdgeInsets.all(5.0),
+              child: Text(convertDate(firsTime)),
+            ),
+            const Padding(padding: EdgeInsets.only(top: 10.0)),
+            Container(
+                alignment: Alignment.topLeft,
+                child: Text("Tanggal Akhir Off :")),
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: 1),
+                ),
+              ),
+              padding: const EdgeInsets.all(5.0),
+              child: Text(convertDate(lastTime)),
+            ),
+            const Padding(padding: EdgeInsets.only(top: 10.0)),
+            Container(alignment: Alignment.topLeft, child: Text("Status :")),
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: 1),
+                ),
+              ),
+              padding: const EdgeInsets.all(5.0),
+              child: Text(status),
+            ),
+            const Padding(padding: EdgeInsets.only(top: 10.0)),
+          ],
+        ),
+      ),
+      actions: [
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Icon(Icons.close_outlined),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return CreateRuang(
+                id: id,
+                code: code,
+                name: name,
+                description: descrition,
+                firstTimeOff: firsTime,
+                lastTimeOff: lastTime,
+                status: status,
+              );
+            }));
+          },
+          child: const Icon(Icons.edit),
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.yellow),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            confirm(id, name);
+          },
+          child: const Icon(Icons.delete),
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+        ),
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alertDialog;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: widget.list == null ? 0 : widget.list.length,
-      itemBuilder: (context, index) {
-        return Container(
-          padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
-          child: Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            child: Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                    color: widget.list[index]["status"] == "close"
-                        ? Colors.red
-                        : Colors.green,
-                  ),
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.all(15),
-                  child: Text(
-                    widget.list[index]["name"],
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            "Kode Ruang : ",
-                            style: TextStyle(fontSize: 18.0),
-                          ),
-                          Text(
-                            widget.list[index]["code"],
-                            style: const TextStyle(fontSize: 18.0),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                            "Deskripsi : ",
-                            style: TextStyle(fontSize: 18.0),
-                          ),
-                          Expanded(
-                            child: Text(
-                              widget.list[index]["description"],
-                              style: const TextStyle(fontSize: 17.0),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                            "Tanggal Awal Off : ",
-                            style: TextStyle(fontSize: 18.0),
-                          ),
-                          Text(
-                            convertDate(widget.list[index]["firstTimeOff"]),
-                            style: const TextStyle(fontSize: 18.0),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                            "Tanggal Akhir Off : ",
-                            style: TextStyle(fontSize: 18.0),
-                          ),
-                          Text(
-                            convertDate(widget.list[index]["lastTimeOff"]),
-                            style: const TextStyle(fontSize: 18.0),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text(
-                            "Status : ",
-                            style: TextStyle(fontSize: 18.0),
-                          ),
-                          Text(
-                            widget.list[index]["status"],
-                            style: const TextStyle(fontSize: 18.0),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.amber,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            child: const Icon(Icons.edit),
-                            onPressed: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return CreateRuang(
-                                  id: widget.list[index]["id"],
-                                  code: widget.list[index]["code"],
-                                  name: widget.list[index]["name"],
-                                  description: widget.list[index]
-                                      ["description"],
-                                  firstTimeOff: widget.list[index]
-                                      ["firstTimeOff"],
-                                  lastTimeOff: widget.list[index]
-                                      ["lastTimeOff"],
-                                  status: widget.list[index]["status"],
-                                );
-                              }));
-                            },
-                          ),
-                          const Padding(padding: EdgeInsets.only(left: 5.0)),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                            child: const Icon(Icons.delete),
-                            onPressed: () {
-                              confirm(
-                                widget.list[index]["id"],
-                                widget.list[index]["name"],
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+          child: DropdownButtonFormField(
+            decoration: InputDecoration(
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0))),
+            value: _field,
+            items: field.map((value) {
+              return DropdownMenuItem(
+                child: Text(value),
+                value: value,
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                _field = value.toString();
+              });
+              if (value.toString() == "Ruang Open") {
+                filterData("open");
+              } else if (value.toString() == "Ruang Close") {
+                filterData("close");
+              } else {
+                filterData("all");
+              }
+            },
           ),
-        );
-      },
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: newData == null ? 0 : newData.length,
+            itemBuilder: (context, index) {
+              return Container(
+                padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                child: Card(
+                  color: newData[index]["status"] == "open"
+                      ? Colors.green
+                      : Colors.red,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20))),
+                  child: ListTile(
+                    title: Text(newData[index]["name"]),
+                    subtitle: Text('Status : ${newData[index]["status"]}'),
+                    leading: Icon(
+                      Icons.meeting_room,
+                      size: 30,
+                    ),
+                    trailing: Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      viewDetail(
+                        widget.list[index]["id"],
+                        widget.list[index]["name"],
+                        widget.list[index]["code"],
+                        widget.list[index]["description"],
+                        widget.list[index]["firstTimeOff"],
+                        widget.list[index]["lastTimeOff"],
+                        widget.list[index]["status"],
+                      );
+                    },
+                    iconColor: Colors.white,
+                    textColor: Colors.white,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

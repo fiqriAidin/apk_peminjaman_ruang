@@ -11,7 +11,6 @@ Future<List> getDataRuang() async {
   List<dynamic> data = map["result"];
 
   if (response.statusCode == 200) {
-    // print(data);
     return data;
   } else {
     throw Exception('Failed to load data');

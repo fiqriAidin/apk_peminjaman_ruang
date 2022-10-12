@@ -15,7 +15,7 @@ class Login extends StatelessWidget {
           Container(
             alignment: Alignment.topLeft,
             padding: const EdgeInsets.only(left: 15),
-            child: ElevatedButton(
+            child: TextButton(
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
@@ -27,10 +27,6 @@ class Login extends StatelessWidget {
               child: Icon(
                 Icons.arrow_back,
                 color: Colors.black,
-              ),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.white,
-                onPrimary: Colors.grey,
               ),
             ),
           ),
