@@ -15,120 +15,51 @@ class _MasterStatusState extends State<MasterStatus> {
 
   var itemCount = 0;
 
-  @override
-  Widget build(BuildContext context) {
-    void inputValue() {
-      AlertDialog alert = AlertDialog(
-        title: const Text("Input Data Master Status"),
-        content: Container(
-          child: InputForm(
-            controller: controllerName,
-            label: "Master Status",
-            hint: "Input nama status",
-          ),
+  void inputValue() {
+    AlertDialog alert = AlertDialog(
+      title: const Text("Input Data Master Status"),
+      content: Container(
+        child: InputForm(
+          controller: controllerName,
+          label: "Master Status",
+          hint: "Input nama status",
         ),
-        actions: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            child: const Text("Tutup"),
-            onPressed: () {
-              setState(() {
-                controllerName.text = "";
-              });
-              Navigator.of(context).pop();
-            },
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-            ),
-            child: const Text("Simpan"),
-            onPressed: () {
-              createDataStatus(controllerName.text);
-              Navigator.of(context).pop();
-              setState(() {
-                controllerName.text = "";
-              });
-            },
-          ),
-        ],
-      );
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Master Status"),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(25),
-              bottomRight: Radius.circular(25)),
-        ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) {
-                  return const Login();
-                }));
-              },
-              icon: const Icon(
-                Icons.logout,
-                color: Colors.white,
-              ))
-        ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await Future.delayed(Duration(milliseconds: 1500));
-          setState(() {
-            itemCount = itemCount + 1;
-          });
-        },
-        child: FutureBuilder(
-          future: getDataStatus(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) print(snapshot.error);
-
-            return snapshot.hasData
-                ? ListValue(
-                    list: snapshot.data,
-                  )
-                : const Center(
-                    child: CircularProgressIndicator(),
-                  );
+      actions: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+          ),
+          child: const Text("Tutup"),
+          onPressed: () {
+            setState(() {
+              controllerName.text = "";
+            });
+            Navigator.of(context).pop();
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        icon: const Icon(Icons.add_comment),
-        backgroundColor: Colors.green,
-        label: const Text("Tambah Data"),
-        onPressed: () {
-          inputValue();
-        },
-      ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+          ),
+          child: const Text("Simpan"),
+          onPressed: () {
+            createDataStatus(controllerName.text);
+            Navigator.of(context).pop();
+            setState(() {
+              controllerName.text = "";
+            });
+          },
+        ),
+      ],
+    );
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
-}
-
-class ListValue extends StatefulWidget {
-  ListValue({Key? key, this.list}) : super(key: key);
-  var list;
-
-  @override
-  State<ListValue> createState() => _ListValueState();
-}
-
-class _ListValueState extends State<ListValue> {
-  TextEditingController controllerName = TextEditingController();
 
   void confirm(id, name) {
     AlertDialog alertDialog = AlertDialog(
@@ -147,6 +78,7 @@ class _ListValueState extends State<ListValue> {
           onPressed: () {
             deleteDataStatus(id);
             Navigator.pop(context);
+            setState(() {});
           },
           child: const Text("Delete"),
           style: ElevatedButton.styleFrom(
@@ -214,10 +146,9 @@ class _ListValueState extends State<ListValue> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget listView(BuildContext context, var data) {
     return ListView.builder(
-      itemCount: widget.list == null ? 0 : widget.list.length,
+      itemCount: data == null ? 0 : data.length,
       itemBuilder: (context, index) {
         return Container(
           padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
@@ -228,7 +159,7 @@ class _ListValueState extends State<ListValue> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Status : ${widget.list[index]["name"]}",
+                    "Status : ${data[index]["name"]}",
                     style: const TextStyle(
                       fontSize: 19,
                     ),
@@ -246,8 +177,8 @@ class _ListValueState extends State<ListValue> {
                         child: const Icon(Icons.edit),
                         onPressed: () {
                           updateValue(
-                            widget.list[index]["id"],
-                            widget.list[index]["name"],
+                            data[index]["id"],
+                            data[index]["name"],
                           );
                         },
                       ),
@@ -262,8 +193,8 @@ class _ListValueState extends State<ListValue> {
                         child: const Icon(Icons.delete),
                         onPressed: () {
                           confirm(
-                            widget.list[index]["id"],
-                            widget.list[index]["name"],
+                            data[index]["id"],
+                            data[index]["name"],
                           );
                         },
                       ),
@@ -275,6 +206,61 @@ class _ListValueState extends State<ListValue> {
           ),
         );
       },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Master Status"),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(25),
+              bottomRight: Radius.circular(25)),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) {
+                  return const Login();
+                }));
+              },
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.white,
+              ))
+        ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await Future.delayed(Duration(milliseconds: 1500));
+          setState(() {
+            itemCount = itemCount + 1;
+          });
+        },
+        child: FutureBuilder(
+          future: getDataStatus(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) print(snapshot.error);
+
+            return snapshot.hasData
+                ? listView(context, snapshot.data)
+                : const Center(
+                    child: CircularProgressIndicator(),
+                  );
+          },
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: const Icon(Icons.add_comment),
+        backgroundColor: Colors.green,
+        label: const Text("Tambah Data"),
+        onPressed: () {
+          inputValue();
+        },
+      ),
     );
   }
 }

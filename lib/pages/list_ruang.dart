@@ -23,8 +23,9 @@ class _ListRuangState extends State<ListRuang> {
       setState(() {
         newData = oldData;
       });
-      // print(newData);
     });
+
+    // newData = oldData;
 
     // TODO: implement initState
     super.initState();
@@ -54,8 +55,10 @@ class _ListRuangState extends State<ListRuang> {
         ElevatedButton(
           onPressed: () {
             deleteDataRuang(id);
+            setState(() {
+              newData = oldData;
+            });
             Navigator.pop(context);
-            setState(() {});
           },
           child: const Text("Delete"),
           style: ElevatedButton.styleFrom(
