@@ -39,29 +39,7 @@ Future<List> getDataPemesanan() async {
   List<dynamic> data = map["result"];
 
   if (response.statusCode == 200) {
-    Map<String, dynamic> dataPesanan = {};
-    for (var i = 0; i < data.length; i++) {
-      final response = await http.get(Uri.parse(
-          'http://192.168.1.31/pinjam-ruang/API/api_view.php?apicall=get_one_ruang&id=${data[i]["ruang"]}'));
-      Map<String, dynamic> map = json.decode(response.body);
-      List<dynamic> dataRuang = map["result"];
-
-      dataPesanan = {
-        'id': data[i]["id"],
-        'name': data[i]["name"],
-        'nomor': data[i]["nomor"],
-        'description': data[i]["description"],
-        'date': data[i]["date"],
-        'firstTime': data[i]["firstTime"],
-        'lastTime': data[i]["lastTime"],
-        'ruang': dataRuang[0]["name"],
-        'users': data[i]["users"],
-        'document': data[i]["document"],
-        'status': data[i]["status"],
-      };
-      print(dataPesanan);
-    }
-
+    print(data);
     return data;
   } else {
     throw Exception('Failed to load data');

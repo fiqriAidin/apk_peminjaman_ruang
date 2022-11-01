@@ -115,21 +115,21 @@ class Login extends StatelessWidget {
                         ),
                       ),
                       const Padding(padding: EdgeInsets.only(bottom: 10.0)),
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     getDataPemesanan();
-                      //   },
-                      //   child: const Text(
-                      //     "tombol percobaan",
-                      //     style: TextStyle(fontSize: 18),
-                      //   ),
-                      //   style: ElevatedButton.styleFrom(
-                      //     minimumSize: const Size.fromHeight(50),
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(50),
-                      //     ),
-                      //   ),
-                      // ),
+                      ElevatedButton(
+                        onPressed: () {
+                          getDataPemesanan();
+                        },
+                        child: const Text(
+                          "tombol percobaan",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        ),
+                      ),
                       const Padding(padding: EdgeInsets.only(bottom: 10.0)),
                     ],
                   ),

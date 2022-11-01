@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:peminjaman_ruang/pages/login.dart';
 import 'package:peminjaman_ruang/pages/pesan_ruang.dart';
 import 'package:peminjaman_ruang/pages/detailPesananAdmin.dart';
+import 'package:peminjaman_ruang/utils/api.dart';
 
 class ListPesananAdmin extends StatefulWidget {
   const ListPesananAdmin({Key? key}) : super(key: key);
@@ -35,11 +36,21 @@ class _ListPesananAdminState extends State<ListPesananAdmin> {
               ))
         ],
       ),
-      body: ListPesanan(
-        peminjam: "Nama Peminjam",
-        waktu: "22-2-2022 20:30 s/d 20:40",
-        ruang: "Nama Ruang",
-        judul: "Judul Acaranya",
+      body: FutureBuilder(
+        future: getDataPemesanan(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            print(snapshot.error);
+          }
+
+          return snapshot.hasData
+              ? ListPesanan(
+                  list: snapshot.data,
+                )
+              : const Center(
+                  child: CircularProgressIndicator(),
+                );
+        },
       ),
       floatingActionButton: FloatingActionButton.extended(
         icon: const Icon(Icons.add_circle),
@@ -58,119 +69,120 @@ class _ListPesananAdminState extends State<ListPesananAdmin> {
 class ListPesanan extends StatefulWidget {
   ListPesanan({
     Key? key,
-    this.peminjam,
-    this.waktu,
-    this.ruang,
-    this.judul,
+    this.list,
   }) : super(key: key);
-  var peminjam;
-  var waktu;
-  var ruang;
-  var judul;
+  var list;
 
   @override
   _ListPesananState createState() => _ListPesananState();
 }
 
 class _ListPesananState extends State<ListPesanan> {
+  String convertDate(time) {
+    var date = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+    var result = "${date.day}-${date.month}-${date.year}";
+
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 100,
-      itemBuilder: (context, index) {
-        return Container(
-          padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
-          child: Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.grey,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return const DetailPesananAdmin();
-                    },
-                  ),
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  children: [
-                    Container(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        widget.peminjam,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            itemCount: widget.list == null ? 0 : widget.list.length,
+            itemBuilder: (context, index) {
+              return Container(
+                padding:
+                    const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(15),
+                    title: Text(
+                      widget.list[index]["users"],
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        widget.waktu,
-                        style:
-                            const TextStyle(fontSize: 15.0, color: Colors.grey),
-                      ),
-                    ),
-                    const Padding(padding: EdgeInsets.only(top: 10)),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        "Meminjam : ${widget.ruang}",
-                        style: const TextStyle(
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        "Judul Acara : ${widget.judul}",
-                        style: const TextStyle(
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    const Padding(padding: EdgeInsets.only(top: 10)),
-                    Container(
-                      alignment: Alignment.center,
-                      child: ElevatedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.warning),
-                        label:
-                            const Text("Pemesanan Ruang Menunggu Persetujuan"),
-                        style: ElevatedButton.styleFrom(
-                          fixedSize:
-                              Size(MediaQuery.of(context).size.width, 40),
-                          backgroundColor: Colors.amber,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
+                    subtitle: Column(
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            convertDate(widget.list[index]["date"]),
+                            style: const TextStyle(
+                                fontSize: 15.0, color: Colors.grey),
                           ),
                         ),
-                      ),
+                        const Padding(padding: EdgeInsets.only(top: 10)),
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Meminjam : ${widget.list[index]["ruang"]}",
+                            style: const TextStyle(
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Judul Acara : ${widget.list[index]["name"]}",
+                            style: const TextStyle(
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                        ),
+                        const Padding(padding: EdgeInsets.only(top: 10)),
+                        Container(
+                          alignment: Alignment.bottomCenter,
+                          child: ElevatedButton.icon(
+                            onPressed: () {},
+                            icon: widget.list[index]["status"] == "Setuju"
+                                ? const Icon(Icons.check)
+                                : const Icon(Icons.close),
+                            label: widget.list[index]["status"] == "Setuju"
+                                ? const Text("Pemesanan Ruang Disetujui")
+                                : const Text("Pemesanan Ruang Ditolak"),
+                            style: ElevatedButton.styleFrom(
+                              fixedSize:
+                                  Size(MediaQuery.of(context).size.width, 40),
+                              backgroundColor:
+                                  widget.list[index]["status"] == "Setuju"
+                                      ? Colors.green
+                                      : Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const DetailPesananAdmin();
+                          },
+                        ),
+                      );
+                    },
+                    textColor: Colors.black,
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 }
