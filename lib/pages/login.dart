@@ -117,7 +117,7 @@ class Login extends StatelessWidget {
                       const Padding(padding: EdgeInsets.only(bottom: 10.0)),
                       ElevatedButton(
                         onPressed: () {
-                          getDataPemesanan();
+                          getDataRuang();
                         },
                         child: const Text(
                           "tombol percobaan",

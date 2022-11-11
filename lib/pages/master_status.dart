@@ -96,9 +96,9 @@ class _MasterStatusState extends State<MasterStatus> {
     );
   }
 
-  void updateValue(id, name) {
+  void updateValue(nomor, status) {
     setState(() {
-      controllerName.text = name;
+      controllerName.text = status;
     });
 
     AlertDialog alert = AlertDialog(
@@ -129,7 +129,7 @@ class _MasterStatusState extends State<MasterStatus> {
           ),
           child: const Text("Simpan"),
           onPressed: () {
-            updateDataStatus(id, controllerName.text);
+            updateDataStatus(nomor, controllerName.text);
             Navigator.of(context).pop();
             setState(() {
               controllerName.text = "";
@@ -153,13 +153,16 @@ class _MasterStatusState extends State<MasterStatus> {
         return Container(
           padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
           child: Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            elevation: 4,
             child: Container(
               padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Status : ${data[index]["name"]}",
+                    "Status : ${data[index]["status"]}",
                     style: const TextStyle(
                       fontSize: 19,
                     ),
@@ -177,8 +180,8 @@ class _MasterStatusState extends State<MasterStatus> {
                         child: const Icon(Icons.edit),
                         onPressed: () {
                           updateValue(
-                            data[index]["id"],
-                            data[index]["name"],
+                            data[index]["nomor"],
+                            data[index]["status"],
                           );
                         },
                       ),
@@ -193,8 +196,8 @@ class _MasterStatusState extends State<MasterStatus> {
                         child: const Icon(Icons.delete),
                         onPressed: () {
                           confirm(
-                            data[index]["id"],
-                            data[index]["name"],
+                            data[index]["nomor"],
+                            data[index]["delete"],
                           );
                         },
                       ),

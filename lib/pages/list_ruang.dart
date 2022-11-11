@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peminjaman_ruang/components/inputForm.dart';
 import 'package:peminjaman_ruang/pages/login.dart';
 import 'package:peminjaman_ruang/pages/create_ruang.dart';
 import 'package:peminjaman_ruang/utils/api.dart';
@@ -39,7 +40,7 @@ class _ListRuangState extends State<ListRuang> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await Future.delayed(Duration(milliseconds: 1500));
+          await Future.delayed(Duration(milliseconds: 1000));
 
           setState(() {
             itemCount = itemCount + 1;
@@ -98,10 +99,14 @@ class _ListValueState extends State<ListValue> {
   }
 
   String convertDate(time) {
-    var date = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
-    var result = "${date.day}-${date.month}-${date.year}";
+    if (time == null) {
+      return "$time";
+    } else {
+      var date = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+      var result = "${date.day}-${date.month}-${date.year}";
 
-    return result;
+      return result;
+    }
   }
 
   void confirm(id, name) {
@@ -139,7 +144,8 @@ class _ListValueState extends State<ListValue> {
     );
   }
 
-  void viewDetail(id, name, code, descrition, firsTime, lastTime, status) {
+  void viewDetail(nomor, keterangan, ruang, informasi, tanggalAwalOff,
+      tanggalAkhirOff, kode) {
     AlertDialog alertDialog = AlertDialog(
       content: Container(
         height: 470,
@@ -155,7 +161,7 @@ class _ListValueState extends State<ListValue> {
                 ),
               ),
               padding: const EdgeInsets.all(5.0),
-              child: Text(name),
+              child: Text(keterangan),
             ),
             const Padding(padding: EdgeInsets.only(top: 10.0)),
             Container(
@@ -168,7 +174,7 @@ class _ListValueState extends State<ListValue> {
                 ),
               ),
               padding: const EdgeInsets.all(5.0),
-              child: Text(code),
+              child: Text(ruang),
             ),
             const Padding(padding: EdgeInsets.only(top: 10.0)),
             Container(alignment: Alignment.topLeft, child: Text("Deskripsi :")),
@@ -180,7 +186,7 @@ class _ListValueState extends State<ListValue> {
                 ),
               ),
               padding: const EdgeInsets.all(5.0),
-              child: Text(descrition),
+              child: Text(informasi),
             ),
             const Padding(padding: EdgeInsets.only(top: 10.0)),
             Container(
@@ -194,7 +200,7 @@ class _ListValueState extends State<ListValue> {
                 ),
               ),
               padding: const EdgeInsets.all(5.0),
-              child: Text(convertDate(firsTime)),
+              child: Text(convertDate(tanggalAwalOff)),
             ),
             const Padding(padding: EdgeInsets.only(top: 10.0)),
             Container(
@@ -208,7 +214,7 @@ class _ListValueState extends State<ListValue> {
                 ),
               ),
               padding: const EdgeInsets.all(5.0),
-              child: Text(convertDate(lastTime)),
+              child: Text(convertDate(tanggalAkhirOff)),
             ),
             const Padding(padding: EdgeInsets.only(top: 10.0)),
             Container(alignment: Alignment.topLeft, child: Text("Status :")),
@@ -220,7 +226,7 @@ class _ListValueState extends State<ListValue> {
                 ),
               ),
               padding: const EdgeInsets.all(5.0),
-              child: Text(status),
+              child: Text(kode),
             ),
             const Padding(padding: EdgeInsets.only(top: 10.0)),
           ],
@@ -238,13 +244,13 @@ class _ListValueState extends State<ListValue> {
             Navigator.of(context).pop();
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return CreateRuang(
-                id: id,
-                code: code,
-                name: name,
-                description: descrition,
-                firstTimeOff: firsTime,
-                lastTimeOff: lastTime,
-                status: status,
+                nomor: nomor,
+                ruang: ruang,
+                keterangan: keterangan,
+                informasi: informasi,
+                tanggalAwalOff: tanggalAwalOff,
+                tanggalAkhirOff: tanggalAkhirOff,
+                kode: kode,
               );
             }));
           },
@@ -254,7 +260,7 @@ class _ListValueState extends State<ListValue> {
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
-            confirm(id, name);
+            confirm(nomor, keterangan);
           },
           child: const Icon(Icons.delete),
           style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
@@ -272,92 +278,81 @@ class _ListValueState extends State<ListValue> {
 
   void filterData(String value) {
     var result = [];
-    if (value == "all") {
-      result = widget.list;
+    if (value.isEmpty) {
+      setState(() {
+        result = widget.list;
+      });
     } else {
-      result = widget.list
-          .where((element) => element["status"]
-              .toString()
-              .toLowerCase()
-              .contains(value.toLowerCase()))
-          .toList();
+      setState(() {
+        result = widget.list
+            .where((element) => element["keterangan"]
+                .toString()
+                .toLowerCase()
+                .contains(value.toLowerCase()))
+            .toList();
+      });
     }
     newData = result;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-          child: DropdownButtonFormField(
-            decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0))),
-            value: _field,
-            items: field.map((value) {
-              return DropdownMenuItem(
-                child: Text(value),
-                value: value,
-              );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                _field = value.toString();
-              });
-              if (value.toString() == "Ruang Open") {
-                filterData("open");
-              } else if (value.toString() == "Ruang Close") {
-                filterData("close");
-              } else {
-                filterData("all");
-              }
-            },
+    return RefreshIndicator(
+      onRefresh: () async {
+        await Future.delayed(Duration(milliseconds: 1500));
+
+        setState(() {
+          newData = widget.list;
+        });
+      },
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+            child: InputForm(
+              label: "Cari",
+              hint: "Masukkan nama ruang yang di cari",
+              onChenged: (value) => filterData(value),
+            ),
           ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: newData == null ? 0 : newData.length,
-            itemBuilder: (context, index) {
-              return Container(
-                padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-                child: Card(
-                  color: newData[index]["status"] == "open"
-                      ? Colors.green
-                      : Colors.red,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20))),
-                  child: ListTile(
-                    title: Text(newData[index]["name"]),
-                    subtitle: Text('Status : ${newData[index]["status"]}'),
-                    leading: const Icon(
-                      Icons.meeting_room,
-                      size: 30,
+          Expanded(
+            child: ListView.builder(
+              itemCount: newData == null ? 0 : newData.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                  child: Card(
+                    elevation: 4,
+                    // color: Colors.amber,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    child: ListTile(
+                      title: Text(newData[index]["keterangan"]),
+                      subtitle: Text('Code : ${newData[index]["ruang"]}'),
+                      leading: const Icon(
+                        Icons.meeting_room,
+                        size: 30,
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                      onTap: () {
+                        viewDetail(
+                          widget.list[index]["nomor"],
+                          widget.list[index]["keterangan"],
+                          widget.list[index]["ruang"],
+                          widget.list[index]["informasi"],
+                          widget.list[index]["tanggalAwalOff"],
+                          widget.list[index]["tanggalAkhirOff"],
+                          widget.list[index]["kode"],
+                        );
+                      },
                     ),
-                    trailing: Icon(Icons.arrow_forward_ios),
-                    onTap: () {
-                      viewDetail(
-                        widget.list[index]["id"],
-                        widget.list[index]["name"],
-                        widget.list[index]["code"],
-                        widget.list[index]["description"],
-                        widget.list[index]["firstTimeOff"],
-                        widget.list[index]["lastTimeOff"],
-                        widget.list[index]["status"],
-                      );
-                    },
-                    iconColor: Colors.white,
-                    textColor: Colors.white,
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
