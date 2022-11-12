@@ -18,55 +18,74 @@ class _PesanRuangState extends State<PesanRuang> {
   List<dynamic> ruang = [];
   String? _ruang;
   List<String> dokumen = [
-    "Pilih Status Dokumen",
     "Diupload ke aplikasi",
-    "Diserahkan berupa hardcopy",
+    "Diserahkan Hardcopy",
   ];
-  String _dokumen = "Pilih Status Dokumen";
+  String? _dokumen;
   String fileName = "Upload File";
   DateTime date = DateTime(0);
-  TimeOfDay firstTime = const TimeOfDay(hour: 0, minute: 0);
-  TimeOfDay lastTime = const TimeOfDay(hour: 0, minute: 0);
+  TimeOfDay firstTime = const TimeOfDay(hour: 00, minute: 00);
+  TimeOfDay lastTime = const TimeOfDay(hour: 00, minute: 00);
   TextEditingController controllerJudul = TextEditingController();
   TextEditingController controllerDesk = TextEditingController();
   TextEditingController controllerNomor = TextEditingController();
 
-  void kirimValue() {
-    ruang.map((e) {
+  String convertTimestamp(hour, minute) {
+    var tempHour = hour.toString().padLeft(2, '0');
+    var tempMinute = minute.toString().padLeft(2, '0');
+    String tempString =
+        "${date.year}-${date.month}-${date.day} ${tempHour}:${tempMinute}:00";
+    DateTime tempDate = DateTime.parse(tempString);
+    print(tempDate.millisecondsSinceEpoch);
+    var result = "${tempDate.millisecondsSinceEpoch}";
+    return result;
+  }
+
+  void kirimValue() async {
+    var tempRuang;
+    var tempPeminjam = "197112182009102002";
+    var tempWatuPinjam = "${DateTime.now().millisecondsSinceEpoch}";
+    var tempStatusDokumen = _dokumen == "Diupload ke aplikasi" ? "1" : "2";
+    await ruang.map((e) {
       if (e['keterangan'] == _ruang) {
-        print(e['nomor']);
+        tempRuang = e['nomor'];
       }
     }).toList();
-    AlertDialog alert = AlertDialog(
-      title: const Text("Data Berhasil Disimpan"),
-      content: Container(
-        height: 200.0,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Judul Acara : ${controllerJudul.text}"),
-            Text("Pilih Ruang : ${_ruang}"),
-            Text("Deskripsi Acara : ${controllerDesk.text}"),
-            Text("Tanggal Mulai : ${date.day}-${date.month}-${date.year}"),
-            Text("Jam Mulai : ${firstTime.hour} : ${firstTime.minute}"),
-            Text("Jam Selesai : ${lastTime.hour} : ${lastTime.minute}"),
-            Text("Nomor HP : ${controllerNomor.text}"),
-          ],
-        ),
-      ),
-      actions: [
-        ElevatedButton(
-          child: const Text("Oke"),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ],
-    );
-    showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+    print(tempRuang);
+    if (date == DateTime(0) ||
+        firstTime == TimeOfDay(hour: 00, minute: 00) ||
+        lastTime == TimeOfDay(hour: 00, minute: 00)) {
+      AlertDialog alert = AlertDialog(
+        title: const Text("Data Berhasil Disimpan"),
+        content: Text("Waktu pemesanan wajib di isi !!!"),
+        actions: [
+          ElevatedButton(
+            child: const Text("Oke"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      );
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    } else {
+      createDataPesanan(
+          controllerJudul.text,
+          tempRuang,
+          controllerDesk.text,
+          convertTimestamp(firstTime.hour, firstTime.minute),
+          convertTimestamp(lastTime.hour, lastTime.minute),
+          controllerNomor.text,
+          tempStatusDokumen,
+          "5",
+          tempPeminjam,
+          tempWatuPinjam,
+          "5");
+      Navigator.of(context).pop();
+    }
   }
 
   selectDate(BuildContext context) async {
@@ -80,8 +99,8 @@ class _PesanRuangState extends State<PesanRuang> {
       setState(() {
         date = selected;
       });
-    print(date);
-    print(date.millisecondsSinceEpoch);
+    // print(date);
+    // print(date.millisecondsSinceEpoch);
   }
 
   selectFirstTime(BuildContext context) async {
@@ -93,7 +112,7 @@ class _PesanRuangState extends State<PesanRuang> {
       setState(() {
         firstTime = selected;
       });
-    print(firstTime);
+    // print(firstTime);
   }
 
   selectLastTime(BuildContext context) async {
@@ -216,6 +235,7 @@ class _PesanRuangState extends State<PesanRuang> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20.0))),
                   value: _dokumen,
+                  hint: const Text("Pilih status dokumen"),
                   items: dokumen.map((value) {
                     return DropdownMenuItem(
                       child: Text(value),
@@ -229,20 +249,22 @@ class _PesanRuangState extends State<PesanRuang> {
                   },
                 ),
                 const Padding(padding: EdgeInsets.only(top: 20.0)),
-                InputDateTime(
-                  icon: Icons.upload_file,
-                  label: "  $fileName",
-                  onPressed: () async {
-                    final result = await FilePicker.platform.pickFiles();
+                _dokumen == "Diupload ke aplikasi"
+                    ? InputDateTime(
+                        icon: Icons.upload_file,
+                        label: "  $fileName",
+                        onPressed: () async {
+                          final result = await FilePicker.platform.pickFiles();
 
-                    if (result != null) {
-                      final file = result.files.first;
-                      setState(() {
-                        fileName = file.name;
-                      });
-                    }
-                  },
-                ),
+                          if (result != null) {
+                            final file = result.files.first;
+                            setState(() {
+                              fileName = file.name;
+                            });
+                          }
+                        },
+                      )
+                    : const Padding(padding: EdgeInsets.only(top: 0.0)),
               ],
             ),
           ),

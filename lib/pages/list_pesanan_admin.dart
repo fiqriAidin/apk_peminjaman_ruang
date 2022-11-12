@@ -106,12 +106,14 @@ class _ListPesananState extends State<ListPesanan> {
                   elevation: 4,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          bottomLeft: Radius.circular(20))),
+                          topRight: Radius.circular(40),
+                          bottomLeft: Radius.circular(40))),
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(15),
                     title: Text(
-                      widget.list[index]["peminjam"],
+                      widget.list[index]["peminjamMhs"].toString() == "[]"
+                          ? widget.list[index]["peminjamPgw"].toString()
+                          : widget.list[index]["peminjamMhs"].toString(),
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -165,7 +167,9 @@ class _ListPesananState extends State<ListPesanan> {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return const DetailPesananAdmin();
+                            return DetailPesananAdmin(
+                              data: widget.list[index],
+                            );
                           },
                         ),
                       );

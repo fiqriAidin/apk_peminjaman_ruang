@@ -1,7 +1,27 @@
 import 'package:flutter/material.dart';
 
-class DetailPesananAdmin extends StatelessWidget {
-  const DetailPesananAdmin({Key? key}) : super(key: key);
+class DetailPesananAdmin extends StatefulWidget {
+  DetailPesananAdmin({Key? key, this.data}) : super(key: key);
+  var data;
+
+  @override
+  State<DetailPesananAdmin> createState() => _DetailPesananAdminState();
+}
+
+class _DetailPesananAdminState extends State<DetailPesananAdmin> {
+  String convertDate(value) {
+    var date = DateTime.fromMillisecondsSinceEpoch(int.parse(value));
+    var result = "${date.day}-${date.month}-${date.year}";
+
+    return result;
+  }
+
+  String convertTime(value) {
+    var date = DateTime.fromMillisecondsSinceEpoch(int.parse(value));
+    var result = "${date.hour}:${date.minute}:${date.second}";
+
+    return result;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +41,9 @@ class DetailPesananAdmin extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Padding(padding: EdgeInsets.only(top: 20.0)),
-              const Center(
+              Center(
                 child: Text(
-                  "Judul Acara",
+                  widget.data['judul'],
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -46,8 +66,10 @@ class DetailPesananAdmin extends StatelessWidget {
                   ),
                 ),
                 padding: const EdgeInsets.all(10.0),
-                child: const Text(
-                  "Nama Peminjam",
+                child: Text(
+                  widget.data["peminjamMhs"].toString() == "[]"
+                      ? widget.data["peminjamPgw"].toString()
+                      : widget.data["peminjamMhs"].toString(),
                   style: TextStyle(fontSize: 15),
                 ),
               ),
@@ -67,8 +89,8 @@ class DetailPesananAdmin extends StatelessWidget {
                   ),
                 ),
                 padding: const EdgeInsets.all(10.0),
-                child: const Text(
-                  "Nama Ruang",
+                child: Text(
+                  widget.data['ruang'],
                   style: TextStyle(fontSize: 15),
                 ),
               ),
@@ -88,8 +110,8 @@ class DetailPesananAdmin extends StatelessWidget {
                   ),
                 ),
                 padding: const EdgeInsets.all(10.0),
-                child: const Text(
-                  "Berisikan deskripsi acara yang berlangsung",
+                child: Text(
+                  widget.data['deskripsi'],
                   style: TextStyle(fontSize: 15),
                 ),
               ),
@@ -109,8 +131,8 @@ class DetailPesananAdmin extends StatelessWidget {
                   ),
                 ),
                 padding: const EdgeInsets.all(10.0),
-                child: const Text(
-                  "081234567891",
+                child: Text(
+                  widget.data['nomorHp'],
                   style: TextStyle(fontSize: 15),
                 ),
               ),
@@ -130,8 +152,8 @@ class DetailPesananAdmin extends StatelessWidget {
                   ),
                 ),
                 padding: const EdgeInsets.all(10.0),
-                child: const Text(
-                  "20 Agustus 200",
+                child: Text(
+                  convertDate(widget.data['waktuMulai']),
                   style: TextStyle(fontSize: 15),
                 ),
               ),
@@ -151,8 +173,8 @@ class DetailPesananAdmin extends StatelessWidget {
                   ),
                 ),
                 padding: const EdgeInsets.all(10.0),
-                child: const Text(
-                  "10.00",
+                child: Text(
+                  convertTime(widget.data['waktuMulai']),
                   style: TextStyle(fontSize: 15),
                 ),
               ),
@@ -172,8 +194,8 @@ class DetailPesananAdmin extends StatelessWidget {
                   ),
                 ),
                 padding: const EdgeInsets.all(10.0),
-                child: const Text(
-                  "12.00",
+                child: Text(
+                  convertTime(widget.data['waktuSelesai']),
                   style: TextStyle(fontSize: 15),
                 ),
               ),
@@ -193,8 +215,10 @@ class DetailPesananAdmin extends StatelessWidget {
                   ),
                 ),
                 padding: const EdgeInsets.all(10.0),
-                child: const Text(
-                  "Diupload ke aplikasi",
+                child: Text(
+                  widget.data['statusDokumen'] == "2"
+                      ? "Diserahkan Hardcopy"
+                      : "Diupload di aplikasi",
                   style: TextStyle(fontSize: 15),
                 ),
               ),
@@ -214,8 +238,12 @@ class DetailPesananAdmin extends StatelessWidget {
                   ),
                 ),
                 padding: const EdgeInsets.all(10.0),
-                child: const Text(
-                  "Sudah di terima",
+                child: Text(
+                  widget.data['statusTerimaDokumen'] == "5"
+                      ? "Belum diperiksa"
+                      : widget.data['statusTerimaDokumen'] == "3"
+                          ? "Diterima"
+                          : "Ditolak",
                   style: TextStyle(fontSize: 15),
                 ),
               ),

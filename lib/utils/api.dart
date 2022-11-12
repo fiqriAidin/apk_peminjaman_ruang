@@ -72,6 +72,25 @@ void createDataRuang(
   });
 }
 
+void createDataPesanan(judul, ruang, deskripsi, waktuMulai, waktuSelesai, nomor,
+    statusDokumen, statusTerimaDokumen, peminjam, waktuPinjam, status) async {
+  var url = Uri.parse(
+      'https://project.mis.pens.ac.id/mis142/API/api_insert.php?apicall=create_pesanan');
+  http.post(url, body: {
+    "judul": judul,
+    "ruang": ruang,
+    "deskripsi": deskripsi,
+    "waktuMulai": waktuMulai,
+    "waktuSelesai": waktuSelesai,
+    "nomor": nomor,
+    "statusDokumen": statusDokumen,
+    "statusTerimaDokumen": statusTerimaDokumen,
+    "peminjam": peminjam,
+    "waktuPinjam": waktuPinjam,
+    "status": status,
+  });
+}
+
 // mengupdate data status
 void updateDataStatus(nomor, status) {
   var url = Uri.parse(
