@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:peminjaman_ruang/components/inputDateTime.dart';
 import 'package:peminjaman_ruang/components/inputForm.dart';
+import 'package:peminjaman_ruang/utils/api.dart';
+
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class PesanRuang extends StatefulWidget {
   const PesanRuang({Key? key}) : super(key: key);
@@ -11,8 +15,8 @@ class PesanRuang extends StatefulWidget {
 }
 
 class _PesanRuangState extends State<PesanRuang> {
-  List<String> ruang = ["Pilih Ruang", "Ruang A", "Ruang B", "Ruang C"];
-  String _ruang = "Pilih Ruang";
+  List<dynamic> ruang = [];
+  String? _ruang;
   List<String> dokumen = [
     "Pilih Status Dokumen",
     "Diupload ke aplikasi",
@@ -28,6 +32,11 @@ class _PesanRuangState extends State<PesanRuang> {
   TextEditingController controllerNomor = TextEditingController();
 
   void kirimValue() {
+    ruang.map((e) {
+      if (e['keterangan'] == _ruang) {
+        print(e['nomor']);
+      }
+    }).toList();
     AlertDialog alert = AlertDialog(
       title: const Text("Data Berhasil Disimpan"),
       content: Container(
@@ -98,6 +107,23 @@ class _PesanRuangState extends State<PesanRuang> {
       });
   }
 
+  void listRuang() async {
+    final response = await http.get(Uri.parse(
+        'https://project.mis.pens.ac.id/mis142/API/api_view.php?apicall=get_ruang'));
+    var map = json.decode(response.body);
+    var data = map["result"];
+    setState(() {
+      ruang = data;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    listRuang();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,10 +153,11 @@ class _PesanRuangState extends State<PesanRuang> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20.0))),
                   value: _ruang,
+                  hint: Text("Pilih Ruang"),
                   items: ruang.map((value) {
                     return DropdownMenuItem(
-                      child: Text(value),
-                      value: value,
+                      child: Text(value['keterangan']),
+                      value: value['keterangan'],
                     );
                   }).toList(),
                   onChanged: (value) {

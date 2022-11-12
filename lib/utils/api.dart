@@ -11,7 +11,7 @@ Future<List> getDataRuang() async {
   List<dynamic> data = map["result"];
 
   if (response.statusCode == 200) {
-    print(data);
+    // print(data);
     return data;
   } else {
     throw Exception('Failed to load data');
@@ -26,7 +26,7 @@ Future<List> getDataStatus() async {
   List<dynamic> data = map["result"];
 
   if (response.statusCode == 200) {
-    print(data);
+    // print(data);
     return data;
   } else {
     throw Exception('Failed to load data');
@@ -34,14 +34,14 @@ Future<List> getDataStatus() async {
 }
 
 // mengambil seluruh data pemesanan
-Future<List> getDataPemesanan() async {
+Future<List> getDataPesanan() async {
   final response = await http.get(Uri.parse(
       'https://project.mis.pens.ac.id/mis142/API/api_view.php?apicall=get_pesanan'));
   Map<String, dynamic> map = json.decode(response.body);
   List<dynamic> data = map["result"];
 
   if (response.statusCode == 200) {
-    print(data);
+    // print(data);
     return data;
   } else {
     throw Exception('Failed to load data');

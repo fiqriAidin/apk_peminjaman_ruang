@@ -37,7 +37,7 @@ class _ListPesananAdminState extends State<ListPesananAdmin> {
         ],
       ),
       body: FutureBuilder(
-        future: getDataPemesanan(),
+        future: getDataPesanan(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             print(snapshot.error);
@@ -80,7 +80,8 @@ class ListPesanan extends StatefulWidget {
 class _ListPesananState extends State<ListPesanan> {
   String convertDate(time) {
     var date = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
-    var result = "${date.day}-${date.month}-${date.year}";
+    var result =
+        "${date.day}-${date.month}-${date.year} ${date.hour}:${date.minute}:${date.second}";
 
     return result;
   }
@@ -97,12 +98,20 @@ class _ListPesananState extends State<ListPesanan> {
                 padding:
                     const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
                 child: Card(
+                  color: widget.list[index]["idStatus"] == "5"
+                      ? Colors.yellow
+                      : widget.list[index]["idStatus"] == "3"
+                          ? Colors.green
+                          : Colors.red,
+                  elevation: 4,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          bottomLeft: Radius.circular(20))),
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(15),
                     title: Text(
-                      widget.list[index]["users"],
+                      widget.list[index]["peminjam"],
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -113,7 +122,7 @@ class _ListPesananState extends State<ListPesanan> {
                         Container(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            convertDate(widget.list[index]["date"]),
+                            "${convertDate(widget.list[index]["waktuMulai"])} s/d ${convertDate(widget.list[index]["waktuSelesai"])}",
                             style: const TextStyle(
                                 fontSize: 15.0, color: Colors.grey),
                           ),
@@ -132,34 +141,20 @@ class _ListPesananState extends State<ListPesanan> {
                         Container(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "Judul Acara : ${widget.list[index]["name"]}",
+                            "Judul Acara : ${widget.list[index]["judul"]}",
                             style: const TextStyle(
                               fontSize: 17.0,
                               fontWeight: FontWeight.w300,
                             ),
                           ),
                         ),
-                        const Padding(padding: EdgeInsets.only(top: 10)),
                         Container(
-                          alignment: Alignment.bottomCenter,
-                          child: ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: widget.list[index]["status"] == "Setuju"
-                                ? const Icon(Icons.check)
-                                : const Icon(Icons.close),
-                            label: widget.list[index]["status"] == "Setuju"
-                                ? const Text("Pemesanan Ruang Disetujui")
-                                : const Text("Pemesanan Ruang Ditolak"),
-                            style: ElevatedButton.styleFrom(
-                              fixedSize:
-                                  Size(MediaQuery.of(context).size.width, 40),
-                              backgroundColor:
-                                  widget.list[index]["status"] == "Setuju"
-                                      ? Colors.green
-                                      : Colors.red,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Status : ${widget.list[index]["status"]}",
+                            style: const TextStyle(
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.w300,
                             ),
                           ),
                         ),
