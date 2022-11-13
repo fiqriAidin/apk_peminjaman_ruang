@@ -36,7 +36,7 @@ class _PesanRuangState extends State<PesanRuang> {
     String tempString =
         "${date.year}-${date.month}-${date.day} ${tempHour}:${tempMinute}:00";
     DateTime tempDate = DateTime.parse(tempString);
-    print(tempDate.millisecondsSinceEpoch);
+    // print(tempDate.millisecondsSinceEpoch);
     var result = "${tempDate.millisecondsSinceEpoch}";
     return result;
   }
@@ -51,7 +51,7 @@ class _PesanRuangState extends State<PesanRuang> {
         tempRuang = e['nomor'];
       }
     }).toList();
-    print(tempRuang);
+    // print(tempRuang);
     if (date == DateTime(0) ||
         firstTime == TimeOfDay(hour: 00, minute: 00) ||
         lastTime == TimeOfDay(hour: 00, minute: 00)) {

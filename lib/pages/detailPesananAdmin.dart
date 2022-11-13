@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peminjaman_ruang/utils/api.dart';
 
 class DetailPesananAdmin extends StatefulWidget {
   DetailPesananAdmin({Key? key, this.data}) : super(key: key);
@@ -21,6 +22,26 @@ class _DetailPesananAdminState extends State<DetailPesananAdmin> {
     var result = "${date.hour}:${date.minute}:${date.second}";
 
     return result;
+  }
+
+  void approvePesanan() {
+    var tempPetugas = "197112182009102002";
+    var tempWaktuVerifikasi = DateTime.now().millisecondsSinceEpoch.toString();
+    var tempStatus = "3";
+    var tempStatusTerimaDokumen = "3";
+    accDataPesanan(widget.data['nomor'], tempPetugas, tempWaktuVerifikasi,
+        tempStatus, tempStatusTerimaDokumen);
+    Navigator.of(context).pop();
+  }
+
+  void rejectPesanan() {
+    var tempPetugas = "197112182009102002";
+    var tempWaktuVerifikasi = DateTime.now().millisecondsSinceEpoch.toString();
+    var tempStatus = "4";
+    var tempStatusTerimaDokumen = "4";
+    accDataPesanan(widget.data['nomor'], tempPetugas, tempWaktuVerifikasi,
+        tempStatus, tempStatusTerimaDokumen);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -252,26 +273,30 @@ class _DetailPesananAdminState extends State<DetailPesananAdmin> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      approvePesanan();
+                    },
                     icon: const Icon(Icons.check),
                     label: const Text("Setujui"),
                     style: ElevatedButton.styleFrom(
                       fixedSize:
                           Size((MediaQuery.of(context).size.width * 0.45), 50),
-                      primary: Colors.green,
+                      backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
                     ),
                   ),
                   ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      rejectPesanan();
+                    },
                     icon: const Icon(Icons.cancel),
                     label: const Text("Tolak"),
                     style: ElevatedButton.styleFrom(
                       fixedSize:
                           Size((MediaQuery.of(context).size.width * 0.45), 50),
-                      primary: Colors.red,
+                      backgroundColor: Colors.red,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),

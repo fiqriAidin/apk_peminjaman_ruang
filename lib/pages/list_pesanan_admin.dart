@@ -126,7 +126,7 @@ class _ListPesananState extends State<ListPesanan> {
                           child: Text(
                             "${convertDate(widget.list[index]["waktuMulai"])} s/d ${convertDate(widget.list[index]["waktuSelesai"])}",
                             style: const TextStyle(
-                                fontSize: 15.0, color: Colors.grey),
+                                fontSize: 15.0, color: Colors.white),
                           ),
                         ),
                         const Padding(padding: EdgeInsets.only(top: 10)),

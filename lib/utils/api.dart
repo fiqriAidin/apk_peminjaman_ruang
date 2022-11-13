@@ -72,6 +72,7 @@ void createDataRuang(
   });
 }
 
+// membuat data pesanan
 void createDataPesanan(judul, ruang, deskripsi, waktuMulai, waktuSelesai, nomor,
     statusDokumen, statusTerimaDokumen, peminjam, waktuPinjam, status) async {
   var url = Uri.parse(
@@ -88,6 +89,52 @@ void createDataPesanan(judul, ruang, deskripsi, waktuMulai, waktuSelesai, nomor,
     "peminjam": peminjam,
     "waktuPinjam": waktuPinjam,
     "status": status,
+  });
+}
+
+// update data pesanan
+void updateDataPesanan(
+    nomor,
+    judul,
+    ruang,
+    deskripsi,
+    waktuMulai,
+    waktuSelesai,
+    nomorHp,
+    statusDokumen,
+    statusTerimaDokumen,
+    peminjam,
+    waktuPinjam,
+    status) async {
+  var url = Uri.parse(
+      'https://project.mis.pens.ac.id/mis142/API/api_update.php?apicall=update_pesanan');
+  http.post(url, body: {
+    "nomor": nomor,
+    "judul": judul,
+    "ruang": ruang,
+    "deskripsi": deskripsi,
+    "waktuMulai": waktuMulai,
+    "waktuSelesai": waktuSelesai,
+    "nomorHp": nomorHp,
+    "statusDokumen": statusDokumen,
+    "statusTerimaDokumen": statusTerimaDokumen,
+    "peminjam": peminjam,
+    "waktuPinjam": waktuPinjam,
+    "status": status,
+  });
+}
+
+// acc data pesanan
+void accDataPesanan(
+    nomor, petugas, waktuVerifikasi, status, statusTerimaDokumen) async {
+  var url = Uri.parse(
+      'https://project.mis.pens.ac.id/mis142/API/api_update.php?apicall=acc_pesanan');
+  http.post(url, body: {
+    "nomor": nomor,
+    "petugas": petugas,
+    "waktuVerifikasi": waktuVerifikasi,
+    "status": status,
+    "statusTerimaDokumen": statusTerimaDokumen,
   });
 }
 
