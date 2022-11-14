@@ -5,7 +5,8 @@ import 'package:peminjaman_ruang/pages/list_ruang.dart';
 import 'package:peminjaman_ruang/pages/list_pesanan_admin.dart';
 
 class HomeAdmin extends StatefulWidget {
-  const HomeAdmin({Key? key}) : super(key: key);
+  HomeAdmin({Key? key, this.dataUsers}) : super(key: key);
+  var dataUsers;
 
   @override
   _HomeAdminState createState() => _HomeAdminState();
@@ -35,8 +36,13 @@ class _HomeAdminState extends State<HomeAdmin>
         children: [
           Beranda(),
           MasterStatus(),
-          ListRuang(),
-          ListPesananAdmin(),
+          ListRuang(
+            role: "admin",
+          ),
+          ListPesananAdmin(
+            role: "admin",
+            dataRole: widget.dataUsers,
+          ),
         ],
       ),
       bottomNavigationBar: Material(

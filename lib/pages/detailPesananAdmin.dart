@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:peminjaman_ruang/pages/pesan_ruang.dart';
 import 'package:peminjaman_ruang/utils/api.dart';
 
 class DetailPesananAdmin extends StatefulWidget {
-  DetailPesananAdmin({Key? key, this.data}) : super(key: key);
+  DetailPesananAdmin({Key? key, this.data, this.role, this.dataRole})
+      : super(key: key);
   var data;
+  var role;
+  var dataRole;
 
   @override
   State<DetailPesananAdmin> createState() => _DetailPesananAdminState();
@@ -42,6 +46,40 @@ class _DetailPesananAdminState extends State<DetailPesananAdmin> {
     accDataPesanan(widget.data['nomor'], tempPetugas, tempWaktuVerifikasi,
         tempStatus, tempStatusTerimaDokumen);
     Navigator.of(context).pop();
+  }
+
+  void deletePesanan() {
+    AlertDialog alertDialog = AlertDialog(
+      content: Text("Apakah kamu yakin ingin menghapus pesanan ini !!!"),
+      actions: [
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text("Batal"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.yellow,
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            deleteDataPesanan(widget.data['nomor']);
+            Navigator.pop(context);
+          },
+          child: const Text("Delete"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+          ),
+        ),
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alertDialog;
+      },
+    );
   }
 
   @override
@@ -269,41 +307,43 @@ class _DetailPesananAdminState extends State<DetailPesananAdmin> {
                 ),
               ),
               const Padding(padding: EdgeInsets.only(top: 30.0)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      approvePesanan();
-                    },
-                    icon: const Icon(Icons.check),
-                    label: const Text("Setujui"),
-                    style: ElevatedButton.styleFrom(
-                      fixedSize:
-                          Size((MediaQuery.of(context).size.width * 0.45), 50),
-                      backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      rejectPesanan();
-                    },
-                    icon: const Icon(Icons.cancel),
-                    label: const Text("Tolak"),
-                    style: ElevatedButton.styleFrom(
-                      fixedSize:
-                          Size((MediaQuery.of(context).size.width * 0.45), 50),
-                      backgroundColor: Colors.red,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              widget.role == "admin"
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            approvePesanan();
+                          },
+                          icon: const Icon(Icons.check),
+                          label: const Text("Setujui"),
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: Size(
+                                (MediaQuery.of(context).size.width * 0.45), 50),
+                            backgroundColor: Colors.green,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            rejectPesanan();
+                          },
+                          icon: const Icon(Icons.cancel),
+                          label: const Text("Tolak"),
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: Size(
+                                (MediaQuery.of(context).size.width * 0.45), 50),
+                            backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : const Padding(padding: EdgeInsets.only(top: 0.0)),
               const Padding(padding: EdgeInsets.only(top: 30.0)),
             ],
           ),
@@ -314,14 +354,23 @@ class _DetailPesananAdminState extends State<DetailPesananAdmin> {
           const Padding(padding: EdgeInsets.only(top: 120.0)),
           FloatingActionButton(
             heroTag: null,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return PesanRuang(
+                  data: widget.data,
+                  dataRole: widget.dataRole,
+                );
+              }));
+            },
             backgroundColor: Colors.amber,
             child: const Icon(Icons.edit),
           ),
           const Padding(padding: EdgeInsets.only(top: 20.0)),
           FloatingActionButton(
             heroTag: null,
-            onPressed: () {},
+            onPressed: () {
+              deletePesanan();
+            },
             backgroundColor: Colors.red,
             child: const Icon(Icons.delete),
           ),

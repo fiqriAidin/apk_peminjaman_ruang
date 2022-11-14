@@ -177,3 +177,22 @@ void deleteDataRuang(nomor) {
       'https://project.mis.pens.ac.id/mis142/API/api_delete.php?apicall=delete_ruang&nomor=${nomor}');
   http.delete(url);
 }
+
+// menghapus data pesanan
+void deleteDataPesanan(nomor) {
+  var url = Uri.parse(
+      'https://project.mis.pens.ac.id/mis142/API/api_delete.php?apicall=delete_pesanan&nomor=${nomor}');
+  http.delete(url);
+}
+
+// pengecekan login aplikasi
+Future<Map<String, dynamic>> authUsers() async {
+  Map<String, dynamic> map;
+  var url = Uri.parse('https://project.mis.pens.ac.id/mis142/API/api_auth.php');
+  final response = await http.post(url, body: {
+    "username": "fikriaidin98@it.student.pens.ac.id",
+    "password": "rahasia",
+  });
+  response.body != "auth error" ? map = json.decode(response.body) : map = {};
+  return map;
+}

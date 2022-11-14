@@ -5,7 +5,8 @@ import 'package:peminjaman_ruang/pages/create_ruang.dart';
 import 'package:peminjaman_ruang/utils/api.dart';
 
 class ListRuang extends StatefulWidget {
-  const ListRuang({Key? key}) : super(key: key);
+  ListRuang({Key? key, this.role}) : super(key: key);
+  var role;
 
   @override
   _ListRuangState createState() => _ListRuangState();
@@ -13,6 +14,13 @@ class ListRuang extends StatefulWidget {
 
 class _ListRuangState extends State<ListRuang> {
   var itemCount = 0;
+  bool indikator = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +64,7 @@ class _ListRuangState extends State<ListRuang> {
             return snapshot.hasData
                 ? ListValue(
                     list: snapshot.data,
+                    role: widget.role,
                   )
                 : const Center(
                     child: CircularProgressIndicator(),
@@ -63,39 +72,40 @@ class _ListRuangState extends State<ListRuang> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        icon: const Icon(Icons.add),
-        label: const Text("Tambah Ruang"),
-        backgroundColor: Colors.green,
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return CreateRuang();
-          }));
-        },
-      ),
+      floatingActionButton: widget.role == "admin"
+          ? FloatingActionButton.extended(
+              icon: const Icon(Icons.add),
+              label: const Text("Tambah Ruang"),
+              backgroundColor: Colors.green,
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return CreateRuang();
+                }));
+              },
+            )
+          : Text(""),
     );
   }
 }
 
 class ListValue extends StatefulWidget {
-  ListValue({Key? key, this.list, this.condition}) : super(key: key);
+  ListValue({Key? key, this.list, this.condition, this.role}) : super(key: key);
   var list;
   var condition;
+  var role;
 
   @override
   State<ListValue> createState() => _ListValueState();
 }
 
 class _ListValueState extends State<ListValue> {
-  List<String> field = ["Semua Ruang", "Ruang Open", "Ruang Close"];
-  String _field = "Semua Ruang";
   var newData = ([]);
 
   @override
   void initState() {
-    newData = widget.list;
     // TODO: implement initState
     super.initState();
+    newData = widget.list;
   }
 
   String convertDate(time) {
@@ -226,7 +236,7 @@ class _ListValueState extends State<ListValue> {
                 ),
               ),
               padding: const EdgeInsets.all(5.0),
-              child: Text(kode),
+              child: Text(kode.toString()),
             ),
             const Padding(padding: EdgeInsets.only(top: 10.0)),
           ],
@@ -239,32 +249,36 @@ class _ListValueState extends State<ListValue> {
           },
           child: const Icon(Icons.close_outlined),
         ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return CreateRuang(
-                nomor: nomor,
-                ruang: ruang,
-                keterangan: keterangan,
-                informasi: informasi,
-                tanggalAwalOff: tanggalAwalOff,
-                tanggalAkhirOff: tanggalAkhirOff,
-                kode: kode,
-              );
-            }));
-          },
-          child: const Icon(Icons.edit),
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.yellow),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            confirm(nomor, keterangan);
-          },
-          child: const Icon(Icons.delete),
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-        ),
+        widget.role == "admin"
+            ? ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return CreateRuang(
+                      nomor: nomor,
+                      ruang: ruang,
+                      keterangan: keterangan,
+                      informasi: informasi,
+                      tanggalAwalOff: tanggalAwalOff,
+                      tanggalAkhirOff: tanggalAkhirOff,
+                      kode: kode,
+                    );
+                  }));
+                },
+                child: const Icon(Icons.edit),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.yellow),
+              )
+            : const Padding(padding: EdgeInsets.only(left: 0.0)),
+        widget.role == "admin"
+            ? ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  confirm(nomor, keterangan);
+                },
+                child: const Icon(Icons.delete),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              )
+            : const Padding(padding: EdgeInsets.only(left: 0.0)),
       ],
     );
 

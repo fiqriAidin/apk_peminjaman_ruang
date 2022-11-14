@@ -5,13 +5,23 @@ import 'package:peminjaman_ruang/pages/detailPesananAdmin.dart';
 import 'package:peminjaman_ruang/utils/api.dart';
 
 class ListPesananAdmin extends StatefulWidget {
-  const ListPesananAdmin({Key? key}) : super(key: key);
+  ListPesananAdmin({Key? key, this.role, this.dataRole}) : super(key: key);
+  var role;
+  var dataRole;
 
   @override
   _ListPesananAdminState createState() => _ListPesananAdminState();
 }
 
 class _ListPesananAdminState extends State<ListPesananAdmin> {
+  var itemCount = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,21 +46,32 @@ class _ListPesananAdminState extends State<ListPesananAdmin> {
               ))
         ],
       ),
-      body: FutureBuilder(
-        future: getDataPesanan(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            print(snapshot.error);
-          }
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await Future.delayed(Duration(milliseconds: 1500));
 
-          return snapshot.hasData
-              ? ListPesanan(
-                  list: snapshot.data,
-                )
-              : const Center(
-                  child: CircularProgressIndicator(),
-                );
+          setState(() {
+            itemCount = itemCount + 1;
+          });
         },
+        child: FutureBuilder(
+          future: getDataPesanan(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              print(snapshot.error);
+            }
+
+            return snapshot.hasData
+                ? ListPesanan(
+                    list: snapshot.data,
+                    role: widget.role,
+                    dataRole: widget.dataRole,
+                  )
+                : const Center(
+                    child: CircularProgressIndicator(),
+                  );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         icon: const Icon(Icons.add_circle),
@@ -58,7 +79,9 @@ class _ListPesananAdminState extends State<ListPesananAdmin> {
         label: const Text("Pesan Ruang"),
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const PesanRuang();
+            return PesanRuang(
+              dataRole: widget.dataRole,
+            );
           }));
         },
       ),
@@ -67,17 +90,52 @@ class _ListPesananAdminState extends State<ListPesananAdmin> {
 }
 
 class ListPesanan extends StatefulWidget {
-  ListPesanan({
-    Key? key,
-    this.list,
-  }) : super(key: key);
+  ListPesanan({Key? key, this.list, this.role, this.dataRole})
+      : super(key: key);
   var list;
+  var role;
+  var dataRole;
 
   @override
   _ListPesananState createState() => _ListPesananState();
 }
 
 class _ListPesananState extends State<ListPesanan> {
+  var newData = ([]);
+  String? _status;
+  List<String> status = [
+    "Semua",
+    "Disetujui",
+    "Menunggu",
+    "Ditolak",
+  ];
+
+  void filterData() {
+    var result = [];
+    if (_status == "Semua") {
+      setState(() {
+        result = widget.list;
+      });
+    } else {
+      setState(() {
+        result = widget.list
+            .where((element) => element["status"]
+                .toString()
+                .toLowerCase()
+                .contains(_status!.toLowerCase()))
+            .toList();
+      });
+    }
+    newData = result;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    newData = widget.list;
+  }
+
   String convertDate(time) {
     var date = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
     var result =
@@ -88,100 +146,134 @@ class _ListPesananState extends State<ListPesanan> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: ListView.builder(
-            itemCount: widget.list == null ? 0 : widget.list.length,
-            itemBuilder: (context, index) {
-              return Container(
-                padding:
-                    const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
-                child: Card(
-                  color: widget.list[index]["idStatus"] == "5"
-                      ? Colors.yellow
-                      : widget.list[index]["idStatus"] == "3"
-                          ? Colors.green
-                          : Colors.red,
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(40),
-                          bottomLeft: Radius.circular(40))),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.all(15),
-                    title: Text(
-                      widget.list[index]["peminjamMhs"].toString() == "[]"
-                          ? widget.list[index]["peminjamPgw"].toString()
-                          : widget.list[index]["peminjamMhs"].toString(),
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    subtitle: Column(
-                      children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "${convertDate(widget.list[index]["waktuMulai"])} s/d ${convertDate(widget.list[index]["waktuSelesai"])}",
-                            style: const TextStyle(
-                                fontSize: 15.0, color: Colors.white),
-                          ),
-                        ),
-                        const Padding(padding: EdgeInsets.only(top: 10)),
-                        Container(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Meminjam : ${widget.list[index]["ruang"]}",
-                            style: const TextStyle(
-                              fontSize: 17.0,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Judul Acara : ${widget.list[index]["judul"]}",
-                            style: const TextStyle(
-                              fontSize: 17.0,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Status : ${widget.list[index]["status"]}",
-                            style: const TextStyle(
-                              fontSize: 17.0,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return DetailPesananAdmin(
-                              data: widget.list[index],
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    textColor: Colors.black,
-                  ),
-                ),
-              );
-            },
+    return RefreshIndicator(
+      onRefresh: () async {
+        await Future.delayed(Duration(milliseconds: 1500));
+
+        setState(() {
+          newData = widget.list;
+        });
+      },
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0),
+            child: DropdownButtonFormField(
+              decoration: InputDecoration(
+                  labelText: "Status Pesanan",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0))),
+              value: _status,
+              hint: const Text("Pilih status pesanan"),
+              items: status.map((value) {
+                return DropdownMenuItem(
+                  child: Text(value),
+                  value: value,
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  _status = value.toString();
+                });
+                filterData();
+              },
+            ),
           ),
-        ),
-      ],
+          Expanded(
+            child: ListView.builder(
+              itemCount: newData == null ? 0 : newData.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding:
+                      const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+                  child: Card(
+                    color: newData[index]["idStatus"] == "5"
+                        ? Colors.yellow
+                        : newData[index]["idStatus"] == "3"
+                            ? Colors.green
+                            : Colors.red,
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(40),
+                            bottomLeft: Radius.circular(40))),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(15),
+                      title: Text(
+                        newData[index]["peminjamMhs"].toString() == "[]"
+                            ? newData[index]["peminjamPgw"].toString()
+                            : newData[index]["peminjamMhs"].toString(),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "${convertDate(newData[index]["waktuMulai"])} s/d ${convertDate(newData[index]["waktuSelesai"])}",
+                              style: const TextStyle(
+                                  fontSize: 15.0, color: Colors.white),
+                            ),
+                          ),
+                          const Padding(padding: EdgeInsets.only(top: 10)),
+                          Container(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Meminjam : ${newData[index]["ruang"]}",
+                              style: const TextStyle(
+                                fontSize: 17.0,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Judul Acara : ${newData[index]["judul"]}",
+                              style: const TextStyle(
+                                fontSize: 17.0,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Status : ${newData[index]["status"]}",
+                              style: const TextStyle(
+                                fontSize: 17.0,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return DetailPesananAdmin(
+                                data: newData[index],
+                                role: widget.role,
+                                dataRole: widget.dataRole,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      textColor: Colors.black,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

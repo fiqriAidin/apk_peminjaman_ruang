@@ -3,9 +3,89 @@ import 'package:peminjaman_ruang/pages/homeAdmin.dart';
 import 'package:peminjaman_ruang/pages/homeUsers.dart';
 import 'package:peminjaman_ruang/pages/onboarding_page.dart';
 import 'package:peminjaman_ruang/utils/api.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
+
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  TextEditingController controllerUsr = TextEditingController();
+  TextEditingController controllerPwd = TextEditingController();
+
+  void pengecekanLogin() async {
+    var map;
+    bool indikator = true;
+    var url =
+        Uri.parse('https://project.mis.pens.ac.id/mis142/API/api_auth.php');
+    final response = await http.post(url, body: {
+      "username": controllerUsr.text,
+      "password": controllerPwd.text,
+    });
+    response.body != "auth error"
+        ? map = json.decode(response.body)
+        : indikator = false;
+    // print(indikator ? "ada" : "null");
+
+    if (controllerUsr.text == "" || controllerPwd.text == "") {
+      AlertDialog alertDialog = AlertDialog(
+        content: const Text("Username & Password harus di isi !!!"),
+        actions: [
+          ElevatedButton(
+            child: const Text("Oke"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      );
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog;
+        },
+      );
+    } else {
+      if (indikator) {
+        if (map['NIP'] == "197112182009102002") {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) {
+            return HomeAdmin(
+              dataUsers: map,
+            );
+          }));
+        } else {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) {
+            return HomeUsers(
+              dataUsers: map,
+            );
+          }));
+        }
+      } else {
+        AlertDialog alertDialog = AlertDialog(
+          content: const Text(
+              "Username & Password yang dimasukkan tidak terdaftar !!!"),
+          actions: [
+            ElevatedButton(
+              child: const Text("Oke"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alertDialog;
+          },
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +133,7 @@ class Login extends StatelessWidget {
                   child: Column(
                     children: [
                       TextField(
+                        controller: controllerUsr,
                         decoration: InputDecoration(
                           hintText: "Username",
                           prefixIcon: const Icon(
@@ -65,6 +146,7 @@ class Login extends StatelessWidget {
                       ),
                       const Padding(padding: EdgeInsets.only(top: 10.0)),
                       TextField(
+                        controller: controllerPwd,
                         obscureText: true,
                         decoration: InputDecoration(
                           hintText: "Password",
@@ -77,50 +159,50 @@ class Login extends StatelessWidget {
                         ),
                       ),
                       const Padding(padding: EdgeInsets.only(top: 20.0)),
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     Navigator.pushReplacement(context,
+                      //         MaterialPageRoute(builder: (context) {
+                      //       return HomeAdmin();
+                      //     }));
+                      //   },
+                      //   child: const Text(
+                      //     "Login Admin",
+                      //     style: TextStyle(fontSize: 18),
+                      //   ),
+                      //   style: ElevatedButton.styleFrom(
+                      //     minimumSize: const Size.fromHeight(50),
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(50),
+                      //     ),
+                      //   ),
+                      // ),
+                      // const Padding(padding: EdgeInsets.only(top: 10.0)),
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     Navigator.pushReplacement(context,
+                      //         MaterialPageRoute(builder: (context) {
+                      //       return HomeUsers();
+                      //     }));
+                      //   },
+                      //   child: const Text(
+                      //     "Login User",
+                      //     style: TextStyle(fontSize: 18),
+                      //   ),
+                      //   style: ElevatedButton.styleFrom(
+                      //     minimumSize: const Size.fromHeight(50),
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(50),
+                      //     ),
+                      //   ),
+                      // ),
+                      // const Padding(padding: EdgeInsets.only(bottom: 10.0)),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushReplacement(context,
-                              MaterialPageRoute(builder: (context) {
-                            return const HomeAdmin();
-                          }));
+                          pengecekanLogin();
                         },
                         child: const Text(
-                          "Login Admin",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                        ),
-                      ),
-                      const Padding(padding: EdgeInsets.only(top: 10.0)),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(context,
-                              MaterialPageRoute(builder: (context) {
-                            return const HomeUsers();
-                          }));
-                        },
-                        child: const Text(
-                          "Login User",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                        ),
-                      ),
-                      const Padding(padding: EdgeInsets.only(bottom: 10.0)),
-                      ElevatedButton(
-                        onPressed: () {
-                          getDataPesanan();
-                        },
-                        child: const Text(
-                          "tombol percobaan",
+                          "Login",
                           style: TextStyle(fontSize: 18),
                         ),
                         style: ElevatedButton.styleFrom(

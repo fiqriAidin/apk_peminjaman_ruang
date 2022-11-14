@@ -8,7 +8,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class PesanRuang extends StatefulWidget {
-  const PesanRuang({Key? key}) : super(key: key);
+  PesanRuang({Key? key, this.data, this.dataRole}) : super(key: key);
+  var data;
+  var dataRole;
 
   @override
   _PesanRuangState createState() => _PesanRuangState();
@@ -43,7 +45,9 @@ class _PesanRuangState extends State<PesanRuang> {
 
   void kirimValue() async {
     var tempRuang;
-    var tempPeminjam = "197112182009102002";
+    var tempPeminjam = widget.dataRole['NIP'] == null
+        ? widget.dataRole['NRP']
+        : widget.dataRole['NIP'];
     var tempWatuPinjam = "${DateTime.now().millisecondsSinceEpoch}";
     var tempStatusDokumen = _dokumen == "Diupload ke aplikasi" ? "1" : "2";
     await ruang.map((e) {
@@ -56,8 +60,8 @@ class _PesanRuangState extends State<PesanRuang> {
         firstTime == TimeOfDay(hour: 00, minute: 00) ||
         lastTime == TimeOfDay(hour: 00, minute: 00)) {
       AlertDialog alert = AlertDialog(
-        title: const Text("Data Berhasil Disimpan"),
-        content: Text("Waktu pemesanan wajib di isi !!!"),
+        title: const Text("Peringatan !!!"),
+        content: Text("Waktu pemesanan wajib di isi"),
         actions: [
           ElevatedButton(
             child: const Text("Oke"),
@@ -72,18 +76,35 @@ class _PesanRuangState extends State<PesanRuang> {
         },
       );
     } else {
-      createDataPesanan(
-          controllerJudul.text,
-          tempRuang,
-          controllerDesk.text,
-          convertTimestamp(firstTime.hour, firstTime.minute),
-          convertTimestamp(lastTime.hour, lastTime.minute),
-          controllerNomor.text,
-          tempStatusDokumen,
-          "5",
-          tempPeminjam,
-          tempWatuPinjam,
-          "5");
+      if (widget.data == null) {
+        createDataPesanan(
+            controllerJudul.text,
+            tempRuang,
+            controllerDesk.text,
+            convertTimestamp(firstTime.hour, firstTime.minute),
+            convertTimestamp(lastTime.hour, lastTime.minute),
+            controllerNomor.text,
+            tempStatusDokumen,
+            "5",
+            tempPeminjam,
+            tempWatuPinjam,
+            "5");
+      } else {
+        updateDataPesanan(
+            widget.data['nomor'],
+            controllerJudul.text,
+            tempRuang,
+            controllerDesk.text,
+            convertTimestamp(firstTime.hour, firstTime.minute),
+            convertTimestamp(lastTime.hour, lastTime.minute),
+            controllerNomor.text,
+            tempStatusDokumen,
+            widget.data['statusTerimaDokumen'],
+            widget.data['idPeminjam'],
+            widget.data['waktuPinjam'],
+            widget.data['idStatus']);
+      }
+
       Navigator.of(context).pop();
     }
   }
@@ -99,8 +120,6 @@ class _PesanRuangState extends State<PesanRuang> {
       setState(() {
         date = selected;
       });
-    // print(date);
-    // print(date.millisecondsSinceEpoch);
   }
 
   selectFirstTime(BuildContext context) async {
@@ -112,7 +131,6 @@ class _PesanRuangState extends State<PesanRuang> {
       setState(() {
         firstTime = selected;
       });
-    // print(firstTime);
   }
 
   selectLastTime(BuildContext context) async {
@@ -140,14 +158,39 @@ class _PesanRuangState extends State<PesanRuang> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     listRuang();
+    if (widget.data != null) {
+      var tempDateMulai = DateTime.fromMillisecondsSinceEpoch(
+          int.parse(widget.data['waktuMulai']));
+      var tempDateSelesai = DateTime.fromMillisecondsSinceEpoch(
+          int.parse(widget.data['waktuSelesai']));
+      TimeOfDay timeMulai =
+          TimeOfDay(hour: tempDateMulai.hour, minute: tempDateMulai.minute);
+      TimeOfDay timeSelesai =
+          TimeOfDay(hour: tempDateSelesai.hour, minute: tempDateSelesai.minute);
+      setState(() {
+        controllerJudul.text = widget.data['judul'];
+        controllerDesk.text = widget.data['deskripsi'];
+        _ruang = widget.data['ruang'];
+        controllerNomor.text = widget.data['nomorHp'];
+        _dokumen = widget.data['statusDokumen'] == "1"
+            ? "Diupload ke aplikasi"
+            : "Diserahkan Hardcopy";
+        date = tempDateMulai;
+        firstTime = timeMulai;
+        lastTime = timeSelesai;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Daftar Pemesanan Ruang"),
+        title: Text(widget.data == null
+            ? "Daftar Pemesanan Ruang"
+            : "Rubah Pemesanan Ruang"),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(25),
@@ -282,8 +325,8 @@ class _PesanRuangState extends State<PesanRuang> {
               borderRadius: BorderRadius.circular(0),
             ),
           ),
-          child: const Text(
-            "Pesan",
+          child: Text(
+            widget.data == null ? "Pesan" : "Simpan Perubahan",
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
         ),

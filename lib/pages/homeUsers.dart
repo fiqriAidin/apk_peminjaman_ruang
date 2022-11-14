@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:peminjaman_ruang/pages/beranda.dart';
 import 'package:peminjaman_ruang/pages/list_ruang.dart';
-import 'package:peminjaman_ruang/pages/list_pesanan_user.dart';
+import 'package:peminjaman_ruang/pages/list_pesanan_admin.dart';
 
 class HomeUsers extends StatefulWidget {
-  const HomeUsers({Key? key}) : super(key: key);
+  HomeUsers({Key? key, this.dataUsers}) : super(key: key);
+  var dataUsers;
 
   @override
   State<HomeUsers> createState() => _HomeUsersState();
@@ -33,8 +34,13 @@ class _HomeUsersState extends State<HomeUsers>
         controller: controller,
         children: [
           Beranda(),
-          ListRuang(),
-          ListPesananUser(),
+          ListRuang(
+            role: "user",
+          ),
+          ListPesananAdmin(
+            role: "user",
+            dataRole: widget.dataUsers,
+          ),
         ],
       ),
       bottomNavigationBar: Material(
