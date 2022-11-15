@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:peminjaman_ruang/pages/pesan_ruang.dart';
 import 'package:peminjaman_ruang/utils/api.dart';
 
-class DetailPesananAdmin extends StatefulWidget {
-  DetailPesananAdmin({Key? key, this.data, this.role, this.dataRole})
+class DetailPesanan extends StatefulWidget {
+  DetailPesanan({Key? key, this.data, this.role, this.dataRole})
       : super(key: key);
   var data;
   var role;
   var dataRole;
 
   @override
-  State<DetailPesananAdmin> createState() => _DetailPesananAdminState();
+  State<DetailPesanan> createState() => _DetailPesananState();
 }
 
-class _DetailPesananAdminState extends State<DetailPesananAdmin> {
+class _DetailPesananState extends State<DetailPesanan> {
   String convertDate(value) {
     var date = DateTime.fromMillisecondsSinceEpoch(int.parse(value));
     var result = "${date.day}-${date.month}-${date.year}";
@@ -349,33 +349,36 @@ class _DetailPesananAdminState extends State<DetailPesananAdmin> {
           ),
         ),
       ]),
-      floatingActionButton: Column(
-        children: [
-          const Padding(padding: EdgeInsets.only(top: 120.0)),
-          FloatingActionButton(
-            heroTag: null,
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return PesanRuang(
-                  data: widget.data,
-                  dataRole: widget.dataRole,
-                );
-              }));
-            },
-            backgroundColor: Colors.amber,
-            child: const Icon(Icons.edit),
-          ),
-          const Padding(padding: EdgeInsets.only(top: 20.0)),
-          FloatingActionButton(
-            heroTag: null,
-            onPressed: () {
-              deletePesanan();
-            },
-            backgroundColor: Colors.red,
-            child: const Icon(Icons.delete),
-          ),
-        ],
-      ),
+      floatingActionButton: widget.role == "admin"
+          ? Column(
+              children: [
+                const Padding(padding: EdgeInsets.only(top: 120.0)),
+                FloatingActionButton(
+                  heroTag: null,
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return PesanRuang(
+                        data: widget.data,
+                        dataRole: widget.dataRole,
+                      );
+                    }));
+                  },
+                  backgroundColor: Colors.amber,
+                  child: const Icon(Icons.edit),
+                ),
+                const Padding(padding: EdgeInsets.only(top: 20.0)),
+                FloatingActionButton(
+                  heroTag: null,
+                  onPressed: () {
+                    deletePesanan();
+                  },
+                  backgroundColor: Colors.red,
+                  child: const Icon(Icons.delete),
+                ),
+              ],
+            )
+          : Text(""),
     );
   }
 }

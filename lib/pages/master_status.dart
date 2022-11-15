@@ -63,7 +63,7 @@ class _MasterStatusState extends State<MasterStatus> {
 
   void confirm(id, name) {
     AlertDialog alertDialog = AlertDialog(
-      content: Text("Apakah kamu yakin ingin menghapus ${name}"),
+      content: Text("Apakah kamu yakin ingin menghapus status : ${name}"),
       actions: [
         ElevatedButton(
           onPressed: () {
@@ -197,7 +197,7 @@ class _MasterStatusState extends State<MasterStatus> {
                         onPressed: () {
                           confirm(
                             data[index]["nomor"],
-                            data[index]["delete"],
+                            data[index]["status"],
                           );
                         },
                       ),

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:peminjaman_ruang/pages/login.dart';
 import 'package:peminjaman_ruang/pages/pesan_ruang.dart';
-import 'package:peminjaman_ruang/pages/detailPesananAdmin.dart';
+import 'package:peminjaman_ruang/pages/detailPesanan.dart';
 import 'package:peminjaman_ruang/utils/api.dart';
 
-class ListPesananAdmin extends StatefulWidget {
-  ListPesananAdmin({Key? key, this.role, this.dataRole}) : super(key: key);
+class ListPesanan extends StatefulWidget {
+  ListPesanan({Key? key, this.role, this.dataRole}) : super(key: key);
   var role;
   var dataRole;
 
   @override
-  _ListPesananAdminState createState() => _ListPesananAdminState();
+  _ListPesananState createState() => _ListPesananState();
 }
 
-class _ListPesananAdminState extends State<ListPesananAdmin> {
+class _ListPesananState extends State<ListPesanan> {
   var itemCount = 0;
 
   @override
@@ -62,7 +62,7 @@ class _ListPesananAdminState extends State<ListPesananAdmin> {
             }
 
             return snapshot.hasData
-                ? ListPesanan(
+                ? ListData(
                     list: snapshot.data,
                     role: widget.role,
                     dataRole: widget.dataRole,
@@ -89,18 +89,17 @@ class _ListPesananAdminState extends State<ListPesananAdmin> {
   }
 }
 
-class ListPesanan extends StatefulWidget {
-  ListPesanan({Key? key, this.list, this.role, this.dataRole})
-      : super(key: key);
+class ListData extends StatefulWidget {
+  ListData({Key? key, this.list, this.role, this.dataRole}) : super(key: key);
   var list;
   var role;
   var dataRole;
 
   @override
-  _ListPesananState createState() => _ListPesananState();
+  _ListDataState createState() => _ListDataState();
 }
 
-class _ListPesananState extends State<ListPesanan> {
+class _ListDataState extends State<ListData> {
   var newData = ([]);
   String? _status;
   List<String> status = [
@@ -256,7 +255,7 @@ class _ListPesananState extends State<ListPesanan> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return DetailPesananAdmin(
+                              return DetailPesanan(
                                 data: newData[index],
                                 role: widget.role,
                                 dataRole: widget.dataRole,

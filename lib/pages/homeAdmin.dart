@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:peminjaman_ruang/pages/beranda.dart';
 import 'package:peminjaman_ruang/pages/master_status.dart';
 import 'package:peminjaman_ruang/pages/list_ruang.dart';
-import 'package:peminjaman_ruang/pages/list_pesanan_admin.dart';
+import 'package:peminjaman_ruang/pages/list_pesanan.dart';
 
 class HomeAdmin extends StatefulWidget {
   HomeAdmin({Key? key, this.dataUsers}) : super(key: key);
@@ -39,7 +39,7 @@ class _HomeAdminState extends State<HomeAdmin>
           ListRuang(
             role: "admin",
           ),
-          ListPesananAdmin(
+          ListPesanan(
             role: "admin",
             dataRole: widget.dataUsers,
           ),

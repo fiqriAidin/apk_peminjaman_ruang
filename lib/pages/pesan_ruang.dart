@@ -56,7 +56,28 @@ class _PesanRuangState extends State<PesanRuang> {
       }
     }).toList();
     // print(tempRuang);
-    if (date == DateTime(0) ||
+    if (controllerJudul.text == "" ||
+        controllerDesk.text == "" ||
+        controllerNomor.text == "" ||
+        _ruang == null ||
+        _dokumen == null) {
+      AlertDialog alert = AlertDialog(
+        title: const Text("Peringatan !!!"),
+        content: Text("Mohon untuk mengisi semua form yang ada"),
+        actions: [
+          ElevatedButton(
+            child: const Text("Oke"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      );
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    } else if (date == DateTime(0) ||
         firstTime == TimeOfDay(hour: 00, minute: 00) ||
         lastTime == TimeOfDay(hour: 00, minute: 00)) {
       AlertDialog alert = AlertDialog(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:peminjaman_ruang/pages/beranda.dart';
 import 'package:peminjaman_ruang/pages/list_ruang.dart';
-import 'package:peminjaman_ruang/pages/list_pesanan_admin.dart';
+import 'package:peminjaman_ruang/pages/list_pesanan.dart';
 
 class HomeUsers extends StatefulWidget {
   HomeUsers({Key? key, this.dataUsers}) : super(key: key);
@@ -37,7 +37,7 @@ class _HomeUsersState extends State<HomeUsers>
           ListRuang(
             role: "user",
           ),
-          ListPesananAdmin(
+          ListPesanan(
             role: "user",
             dataRole: widget.dataUsers,
           ),
