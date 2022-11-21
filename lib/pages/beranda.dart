@@ -104,7 +104,10 @@ class Beranda extends StatelessWidget {
       body: ListView(
         children: [
           Card(
+            elevation: 5,
             margin: EdgeInsets.all(15),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Container(
               padding: EdgeInsets.all(15),
               child: Column(
@@ -127,9 +130,8 @@ class Beranda extends StatelessWidget {
               ),
             ),
           ),
-          Padding(padding: EdgeInsets.only(top: 20)),
           Container(
-            padding: EdgeInsets.only(left: 30, bottom: 15),
+            padding: EdgeInsets.only(top: 15, left: 20, right: 15),
             child: const Text(
               "Statistik Peminjaman",
               style: TextStyle(
@@ -138,33 +140,45 @@ class Beranda extends StatelessWidget {
               ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              PieChart(
-                dataMap: dataMap1,
-                animationDuration: Duration(milliseconds: 1000),
-                chartLegendSpacing: 5,
-                chartRadius: MediaQuery.of(context).size.width / 3.8,
-                chartValuesOptions: ChartValuesOptions(
-                  showChartValuesInPercentage: true,
-                ),
+          Card(
+            elevation: 5,
+            margin: EdgeInsets.all(15),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            child: Container(
+              padding: EdgeInsets.all(15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  PieChart(
+                    dataMap: dataMap1,
+                    animationDuration: Duration(milliseconds: 1000),
+                    chartLegendSpacing: 5,
+                    chartRadius: MediaQuery.of(context).size.width / 4.5,
+                    chartValuesOptions: ChartValuesOptions(
+                      showChartValuesInPercentage: true,
+                    ),
+                  ),
+                  PieChart(
+                    dataMap: dataMap2,
+                    animationDuration: Duration(milliseconds: 1000),
+                    chartLegendSpacing: 5,
+                    chartRadius: MediaQuery.of(context).size.width / 4.5,
+                    chartValuesOptions: ChartValuesOptions(
+                      showChartValuesInPercentage: true,
+                    ),
+                  ),
+                ],
               ),
-              PieChart(
-                dataMap: dataMap2,
-                animationDuration: Duration(milliseconds: 1000),
-                chartLegendSpacing: 5,
-                chartRadius: MediaQuery.of(context).size.width / 3.8,
-                chartValuesOptions: ChartValuesOptions(
-                  showChartValuesInPercentage: true,
-                ),
-              ),
-            ],
+            ),
           ),
           Container(
             height: 300,
-            padding: EdgeInsets.all(20),
             child: Card(
+              elevation: 5,
+              margin: EdgeInsets.all(15),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -185,8 +199,11 @@ class Beranda extends StatelessWidget {
           ),
           Container(
             height: 300,
-            padding: EdgeInsets.all(20),
             child: Card(
+              elevation: 5,
+              margin: EdgeInsets.all(15),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(

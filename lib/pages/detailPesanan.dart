@@ -134,6 +134,29 @@ class _DetailPesananState extends State<DetailPesanan> {
               ),
               const Padding(padding: EdgeInsets.only(top: 15.0)),
               const Text(
+                "Status Peminjam :",
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(width: 1),
+                  ),
+                ),
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  widget.data['statusPeminjam'] == "6"
+                      ? "Internal"
+                      : "External",
+                  style: TextStyle(fontSize: 15),
+                ),
+              ),
+              const Padding(padding: EdgeInsets.only(top: 15.0)),
+              const Text(
                 "Meminjam :",
                 style: TextStyle(
                   fontSize: 17,
@@ -361,6 +384,7 @@ class _DetailPesananState extends State<DetailPesanan> {
                       return PesanRuang(
                         data: widget.data,
                         dataRole: widget.dataRole,
+                        role: widget.role,
                       );
                     }));
                   },

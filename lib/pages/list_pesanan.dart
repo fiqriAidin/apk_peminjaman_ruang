@@ -81,6 +81,7 @@ class _ListPesananState extends State<ListPesanan> {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return PesanRuang(
               dataRole: widget.dataRole,
+              role: widget.role,
             );
           }));
         },
@@ -107,13 +108,36 @@ class _ListDataState extends State<ListData> {
     "Disetujui",
     "Menunggu",
     "Ditolak",
+    "Internal",
+    "External",
   ];
 
   void filterData() {
     var result = [];
+    var tempStatus;
     if (_status == "Semua") {
       setState(() {
         result = widget.list;
+      });
+    } else if (_status == "Internal") {
+      tempStatus = "6";
+      setState(() {
+        result = widget.list
+            .where((element) => element["statusPeminjam"]
+                .toString()
+                .toLowerCase()
+                .contains(tempStatus.toLowerCase()))
+            .toList();
+      });
+    } else if (_status == "External") {
+      tempStatus = "7";
+      setState(() {
+        result = widget.list
+            .where((element) => element["statusPeminjam"]
+                .toString()
+                .toLowerCase()
+                .contains(tempStatus.toLowerCase()))
+            .toList();
       });
     } else {
       setState(() {
@@ -151,6 +175,7 @@ class _ListDataState extends State<ListData> {
 
         setState(() {
           newData = widget.list;
+          _status = null;
         });
       },
       child: Column(
@@ -163,7 +188,7 @@ class _ListDataState extends State<ListData> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0))),
               value: _status,
-              hint: const Text("Pilih status pesanan"),
+              hint: const Text("Pilih status"),
               items: status.map((value) {
                 return DropdownMenuItem(
                   child: Text(value),
@@ -232,6 +257,16 @@ class _ListDataState extends State<ListData> {
                             alignment: Alignment.topLeft,
                             child: Text(
                               "Judul Acara : ${newData[index]["judul"]}",
+                              style: const TextStyle(
+                                fontSize: 17.0,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Status Peminjam : ${newData[index]["statusPeminjam"] == "6" ? "Internal" : "External"}",
                               style: const TextStyle(
                                 fontSize: 17.0,
                                 fontWeight: FontWeight.w300,

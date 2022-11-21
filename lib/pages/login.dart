@@ -16,8 +16,12 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController controllerUsr = TextEditingController();
   TextEditingController controllerPwd = TextEditingController();
+  bool loginIndikator = false;
 
   void pengecekanLogin() async {
+    setState(() {
+      loginIndikator = true;
+    });
     var map;
     bool indikator = true;
     var url =
@@ -85,6 +89,9 @@ class _LoginState extends State<Login> {
         );
       }
     }
+    setState(() {
+      loginIndikator = false;
+    });
   }
 
   @override
@@ -198,12 +205,14 @@ class _LoginState extends State<Login> {
                       // ),
                       // const Padding(padding: EdgeInsets.only(bottom: 10.0)),
                       ElevatedButton(
-                        onPressed: () {
-                          pengecekanLogin();
-                        },
-                        child: const Text(
-                          "Login",
-                          style: TextStyle(fontSize: 18),
+                        onPressed: loginIndikator
+                            ? null
+                            : () {
+                                pengecekanLogin();
+                              },
+                        child: Text(
+                          loginIndikator == true ? "Proses...." : "Login",
+                          style: const TextStyle(fontSize: 18),
                         ),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),

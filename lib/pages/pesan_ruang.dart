@@ -8,9 +8,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class PesanRuang extends StatefulWidget {
-  PesanRuang({Key? key, this.data, this.dataRole}) : super(key: key);
+  PesanRuang({Key? key, this.data, this.dataRole, this.role}) : super(key: key);
   var data;
   var dataRole;
+  var role;
 
   @override
   _PesanRuangState createState() => _PesanRuangState();
@@ -24,6 +25,8 @@ class _PesanRuangState extends State<PesanRuang> {
     "Diserahkan Hardcopy",
   ];
   String? _dokumen;
+  List<String> statusPeminjam = ["Internal", "External"];
+  String? _statusPeminjam;
   String fileName = "Upload File";
   DateTime date = DateTime(0);
   TimeOfDay firstTime = const TimeOfDay(hour: 00, minute: 00);
@@ -44,6 +47,13 @@ class _PesanRuangState extends State<PesanRuang> {
   }
 
   void kirimValue() async {
+    print(_statusPeminjam);
+    var tempDokumen = "";
+    var tempStatusPeminjam = _statusPeminjam == null
+        ? "6"
+        : _statusPeminjam == "Internal"
+            ? "6"
+            : "7";
     var tempRuang;
     var tempPeminjam = widget.dataRole['NIP'] == null
         ? widget.dataRole['NRP']
@@ -55,7 +65,6 @@ class _PesanRuangState extends State<PesanRuang> {
         tempRuang = e['nomor'];
       }
     }).toList();
-    // print(tempRuang);
     if (controllerJudul.text == "" ||
         controllerDesk.text == "" ||
         controllerNomor.text == "" ||
@@ -109,7 +118,9 @@ class _PesanRuangState extends State<PesanRuang> {
             "5",
             tempPeminjam,
             tempWatuPinjam,
-            "5");
+            "5",
+            tempStatusPeminjam,
+            tempDokumen);
       } else {
         updateDataPesanan(
             widget.data['nomor'],
@@ -123,7 +134,9 @@ class _PesanRuangState extends State<PesanRuang> {
             widget.data['statusTerimaDokumen'],
             widget.data['idPeminjam'],
             widget.data['waktuPinjam'],
-            widget.data['idStatus']);
+            widget.data['idStatus'],
+            tempStatusPeminjam,
+            tempDokumen);
       }
 
       Navigator.of(context).pop();
@@ -201,6 +214,8 @@ class _PesanRuangState extends State<PesanRuang> {
         date = tempDateMulai;
         firstTime = timeMulai;
         lastTime = timeSelesai;
+        _statusPeminjam =
+            widget.data['statusPeminjam'] == "6" ? "Internal" : "External";
       });
     }
   }
@@ -224,6 +239,30 @@ class _PesanRuangState extends State<PesanRuang> {
             padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
+                widget.role == "admin"
+                    ? DropdownButtonFormField(
+                        decoration: InputDecoration(
+                            labelText: "Status Peminjam",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20.0))),
+                        value: _statusPeminjam,
+                        hint: Text("Pilih Status Peminjam"),
+                        items: statusPeminjam.map((value) {
+                          return DropdownMenuItem(
+                            child: Text(value),
+                            value: value,
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _statusPeminjam = value.toString();
+                          });
+                        },
+                      )
+                    : const Padding(padding: EdgeInsets.only(top: 0.0)),
+                widget.role == "admin"
+                    ? const Padding(padding: EdgeInsets.only(top: 20.0))
+                    : const Padding(padding: EdgeInsets.only(top: 0.0)),
                 InputForm(
                   controller: controllerJudul,
                   label: "Judul Acara",

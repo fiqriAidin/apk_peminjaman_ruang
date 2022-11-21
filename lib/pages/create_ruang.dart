@@ -62,16 +62,37 @@ class _CreateRuangState extends State<CreateRuang> {
   }
 
   void createNewRuang() {
-    createDataRuang(
-      controllerRuang.text,
-      controllerKet.text,
-      controllerInfo.text,
-      firstDate == DateTime(0) ? "" : "${firstDate.millisecondsSinceEpoch}",
-      lastDate == DateTime(0) ? "" : "${lastDate.millisecondsSinceEpoch}",
-      "K",
-    );
+    if (controllerRuang.text == "" ||
+        controllerKet.text == "" ||
+        controllerInfo.text == "") {
+      AlertDialog alert = AlertDialog(
+        title: const Text("Peringatan !!!"),
+        content: Text("Mohon untuk mengisi semua form yang ada"),
+        actions: [
+          ElevatedButton(
+            child: const Text("Oke"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      );
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    } else {
+      createDataRuang(
+        controllerRuang.text,
+        controllerKet.text,
+        controllerInfo.text,
+        firstDate == DateTime(0) ? "" : "${firstDate.millisecondsSinceEpoch}",
+        lastDate == DateTime(0) ? "" : "${lastDate.millisecondsSinceEpoch}",
+        "K",
+      );
 
-    Navigator.pop(context);
+      Navigator.pop(context);
+    }
   }
 
   void updateRuang() {

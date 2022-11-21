@@ -73,8 +73,20 @@ void createDataRuang(
 }
 
 // membuat data pesanan
-void createDataPesanan(judul, ruang, deskripsi, waktuMulai, waktuSelesai, nomor,
-    statusDokumen, statusTerimaDokumen, peminjam, waktuPinjam, status) async {
+void createDataPesanan(
+    judul,
+    ruang,
+    deskripsi,
+    waktuMulai,
+    waktuSelesai,
+    nomor,
+    statusDokumen,
+    statusTerimaDokumen,
+    peminjam,
+    waktuPinjam,
+    status,
+    statusPeminjam,
+    dokumen) async {
   var url = Uri.parse(
       'https://project.mis.pens.ac.id/mis142/API/api_insert.php?apicall=create_pesanan');
   http.post(url, body: {
@@ -89,6 +101,8 @@ void createDataPesanan(judul, ruang, deskripsi, waktuMulai, waktuSelesai, nomor,
     "peminjam": peminjam,
     "waktuPinjam": waktuPinjam,
     "status": status,
+    "statusPeminjam": statusPeminjam,
+    "dokumen": dokumen,
   });
 }
 
@@ -105,7 +119,9 @@ void updateDataPesanan(
     statusTerimaDokumen,
     peminjam,
     waktuPinjam,
-    status) async {
+    status,
+    statusPeminjam,
+    dokumen) async {
   var url = Uri.parse(
       'https://project.mis.pens.ac.id/mis142/API/api_update.php?apicall=update_pesanan');
   http.post(url, body: {
@@ -121,6 +137,8 @@ void updateDataPesanan(
     "peminjam": peminjam,
     "waktuPinjam": waktuPinjam,
     "status": status,
+    "statusPeminjam": statusPeminjam,
+    "dokumen": dokumen,
   });
 }
 

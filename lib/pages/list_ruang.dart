@@ -110,7 +110,7 @@ class _ListValueState extends State<ListValue> {
 
   String convertDate(time) {
     if (time == null) {
-      return "$time";
+      return "Tersedia";
     } else {
       var date = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
       var result = "${date.day}-${date.month}-${date.year}";
