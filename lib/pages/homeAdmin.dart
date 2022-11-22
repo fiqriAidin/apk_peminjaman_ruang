@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:peminjaman_ruang/pages/beranda.dart';
 import 'package:peminjaman_ruang/pages/master_status.dart';
 import 'package:peminjaman_ruang/pages/list_ruang.dart';
@@ -45,26 +46,36 @@ class _HomeAdminState extends State<HomeAdmin>
           ),
         ],
       ),
-      bottomNavigationBar: Material(
-        child: Container(
-          height: 48,
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: TabBar(
-            indicator: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.black,
-            controller: controller,
-            tabs: const [
-              Tab(icon: Icon(Icons.home)),
-              Tab(icon: Icon(Icons.widgets)),
-              Tab(icon: Icon(Icons.storage_outlined)),
-              Tab(icon: Icon(Icons.file_copy_sharp)),
+      bottomNavigationBar: Container(
+        child: Padding(
+          padding: EdgeInsets.only(left: 15, right: 15),
+          child: GNav(
+            color: Colors.black,
+            activeColor: Colors.white,
+            tabBackgroundColor: Colors.blue,
+            gap: 8,
+            padding: const EdgeInsets.all(16),
+            tabs: [
+              GButton(
+                icon: Icons.home,
+                text: "Home",
+                onPressed: () => controller.index = 0,
+              ),
+              GButton(
+                icon: Icons.widgets,
+                text: "Status",
+                onPressed: () => controller.index = 1,
+              ),
+              GButton(
+                icon: Icons.storage_outlined,
+                text: "Ruang",
+                onPressed: () => controller.index = 2,
+              ),
+              GButton(
+                icon: Icons.file_copy_sharp,
+                text: "Pesanan",
+                onPressed: () => controller.index = 3,
+              ),
             ],
           ),
         ),

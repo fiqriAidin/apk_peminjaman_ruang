@@ -216,7 +216,11 @@ class _MasterStatusState extends State<MasterStatus> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Master Status"),
+        title: Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.only(left: 50),
+          child: Text("Master Status"),
+        ),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(25),

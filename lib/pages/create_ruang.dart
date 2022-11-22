@@ -135,7 +135,10 @@ class _CreateRuangState extends State<CreateRuang> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Peminjaman Ruang PENS"),
+        title: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(right: 50),
+            child: const Text("Peminjaman Ruang PENS")),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(25),

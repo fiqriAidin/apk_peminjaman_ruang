@@ -86,7 +86,10 @@ class _DetailPesananState extends State<DetailPesanan> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Detail Pesanan"),
+        title: Container(
+            padding: EdgeInsets.only(right: 50),
+            alignment: Alignment.center,
+            child: Text("Detail Pesanan")),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(25),

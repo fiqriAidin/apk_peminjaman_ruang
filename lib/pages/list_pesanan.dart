@@ -26,7 +26,11 @@ class _ListPesananState extends State<ListPesanan> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Daftar Pesanan"),
+        title: Container(
+          padding: EdgeInsets.only(left: 50),
+          alignment: Alignment.center,
+          child: Text("Daftar Pesanan"),
+        ),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(25),

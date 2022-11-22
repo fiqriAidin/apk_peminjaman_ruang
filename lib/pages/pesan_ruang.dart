@@ -224,9 +224,13 @@ class _PesanRuangState extends State<PesanRuang> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.data == null
-            ? "Daftar Pemesanan Ruang"
-            : "Rubah Pemesanan Ruang"),
+        title: Container(
+          padding: EdgeInsets.only(right: 50),
+          alignment: Alignment.center,
+          child: Text(widget.data == null
+              ? "Daftar Pemesanan Ruang"
+              : "Rubah Pemesanan Ruang"),
+        ),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(25),

@@ -26,7 +26,11 @@ class _ListRuangState extends State<ListRuang> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("List Ruang"),
+        title: Container(
+          padding: EdgeInsets.only(left: 50),
+          alignment: Alignment.center,
+          child: Text("List Ruang"),
+        ),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(25),

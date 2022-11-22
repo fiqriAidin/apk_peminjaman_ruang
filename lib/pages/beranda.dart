@@ -58,6 +58,10 @@ class Beranda extends StatelessWidget {
     "April": 16,
   };
 
+  Map<String, double> dataMapRuang = {
+    "Lap Atas": 5,
+  };
+
   @override
   Widget build(BuildContext context) {
     List<charts.Series<Years, String>> series1 = [
@@ -80,8 +84,12 @@ class Beranda extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Peminjaman Ruang PENS",
+        title: Container(
+          padding: EdgeInsets.only(left: 50),
+          alignment: Alignment.center,
+          child: Text(
+            "Peminjaman Ruang PENS",
+          ),
         ),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -140,6 +148,36 @@ class Beranda extends StatelessWidget {
               ),
             ),
           ),
+          // Card(
+          //   elevation: 5,
+          //   margin: EdgeInsets.all(15),
+          //   child: Container(
+          //     padding: EdgeInsets.all(15),
+          //     child: Row(
+          //       children: [
+          //         Expanded(
+          //           child: Container(
+          //             child: Text(
+          //                 "Ruang Lap Atas sering dilakukan peminjaman dalam bulan ini"),
+          //           ),
+          //         ),
+          //         Expanded(
+          //           child: PieChart(
+          //             chartType: ChartType.ring,
+          //             dataMap: dataMapRuang,
+          //             animationDuration: Duration(milliseconds: 1000),
+          //             chartLegendSpacing: 5,
+          //             // chartRadius: MediaQuery.of(context).size.width / 7.5,
+          //             chartValuesOptions: ChartValuesOptions(
+          //               showChartValuesInPercentage: true,
+          //             ),
+          //             totalValue: 20,
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
           Card(
             elevation: 5,
             margin: EdgeInsets.all(15),
