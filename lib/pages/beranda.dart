@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:peminjaman_ruang/pages/login.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:peminjaman_ruang/utils/api.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 //membuat model dalam satu tahun
@@ -84,6 +85,7 @@ class Beranda extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(16, 57, 104, 1),
         title: Container(
           padding: EdgeInsets.only(left: 50),
           alignment: Alignment.center,
@@ -130,10 +132,18 @@ class Beranda extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const ListNotif(),
-                  const ListNotif(),
-                  const ListNotif(),
-                  const ListNotif(),
+                  FutureBuilder(
+                    future: getDataPesanan(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) print(snapshot.error);
+
+                      return snapshot.hasData
+                          ? ListNotif(data: snapshot.data)
+                          : const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -148,36 +158,42 @@ class Beranda extends StatelessWidget {
               ),
             ),
           ),
-          // Card(
-          //   elevation: 5,
-          //   margin: EdgeInsets.all(15),
-          //   child: Container(
-          //     padding: EdgeInsets.all(15),
-          //     child: Row(
-          //       children: [
-          //         Expanded(
-          //           child: Container(
-          //             child: Text(
-          //                 "Ruang Lap Atas sering dilakukan peminjaman dalam bulan ini"),
-          //           ),
-          //         ),
-          //         Expanded(
-          //           child: PieChart(
-          //             chartType: ChartType.ring,
-          //             dataMap: dataMapRuang,
-          //             animationDuration: Duration(milliseconds: 1000),
-          //             chartLegendSpacing: 5,
-          //             // chartRadius: MediaQuery.of(context).size.width / 7.5,
-          //             chartValuesOptions: ChartValuesOptions(
-          //               showChartValuesInPercentage: true,
-          //             ),
-          //             totalValue: 20,
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
+          Card(
+            elevation: 5,
+            margin: EdgeInsets.all(15),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            child: Container(
+              padding: EdgeInsets.all(15),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      child: Text(
+                          "Ruang yang sering dilakukan peminjaman dalam bulan ini adalah Lap Atas"),
+                    ),
+                  ),
+                  Expanded(
+                    child: PieChart(
+                      chartType: ChartType.ring,
+                      dataMap: dataMapRuang,
+                      animationDuration: Duration(milliseconds: 1000),
+                      baseChartColor: Colors.grey.withOpacity(0.5),
+                      colorList: [Colors.greenAccent],
+                      chartRadius: MediaQuery.of(context).size.width / 6,
+                      legendOptions: LegendOptions(
+                        showLegends: false,
+                      ),
+                      chartValuesOptions: ChartValuesOptions(
+                        showChartValuesInPercentage: true,
+                      ),
+                      totalValue: 15,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           Card(
             elevation: 5,
             margin: EdgeInsets.all(15),
@@ -267,7 +283,8 @@ class Beranda extends StatelessWidget {
 }
 
 class ListNotif extends StatelessWidget {
-  const ListNotif({Key? key}) : super(key: key);
+  ListNotif({Key? key, this.data}) : super(key: key);
+  var data;
 
   @override
   Widget build(BuildContext context) {
@@ -276,8 +293,8 @@ class ListNotif extends StatelessWidget {
         const Padding(padding: EdgeInsets.only(top: 10)),
         Container(
           alignment: Alignment.topLeft,
-          child: const Text(
-            "22-02-2022 20.00 s/d 22.00",
+          child: Text(
+            "waktuPinjam",
             style: TextStyle(fontSize: 14.0, color: Colors.grey),
           ),
         ),

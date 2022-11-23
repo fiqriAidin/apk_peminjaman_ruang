@@ -224,6 +224,7 @@ class _PesanRuangState extends State<PesanRuang> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(16, 57, 104, 1),
         title: Container(
           padding: EdgeInsets.only(right: 50),
           alignment: Alignment.center,
@@ -384,7 +385,7 @@ class _PesanRuangState extends State<PesanRuang> {
             kirimValue();
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: const Color.fromRGBO(16, 57, 104, 1),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(0),
             ),

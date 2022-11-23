@@ -135,6 +135,7 @@ class _CreateRuangState extends State<CreateRuang> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(16, 57, 104, 1),
         title: Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.only(right: 50),
@@ -206,13 +207,13 @@ class _CreateRuangState extends State<CreateRuang> {
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: const Color.fromRGBO(16, 57, 104, 1),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(0),
             ),
           ),
           child: const Text(
-            "Kirim",
+            "Simpan",
             style: TextStyle(fontSize: 18.0, color: Colors.white),
           ),
         ),

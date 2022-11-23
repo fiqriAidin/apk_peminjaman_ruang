@@ -52,7 +52,7 @@ class _HomeAdminState extends State<HomeAdmin>
           child: GNav(
             color: Colors.black,
             activeColor: Colors.white,
-            tabBackgroundColor: Colors.blue,
+            tabBackgroundColor: Color.fromRGBO(16, 57, 104, 1),
             gap: 8,
             padding: const EdgeInsets.all(16),
             tabs: [

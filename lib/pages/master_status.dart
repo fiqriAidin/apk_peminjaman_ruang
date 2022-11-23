@@ -216,6 +216,7 @@ class _MasterStatusState extends State<MasterStatus> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(16, 57, 104, 1),
         title: Container(
           alignment: Alignment.center,
           padding: EdgeInsets.only(left: 50),

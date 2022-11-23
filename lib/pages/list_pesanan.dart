@@ -26,6 +26,7 @@ class _ListPesananState extends State<ListPesanan> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(16, 57, 104, 1),
         title: Container(
           padding: EdgeInsets.only(left: 50),
           alignment: Alignment.center,
