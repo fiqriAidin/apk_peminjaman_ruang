@@ -111,201 +111,231 @@ class Beranda extends StatelessWidget {
               ))
         ],
       ),
-      body: ListView(
-        children: [
-          Card(
-            elevation: 5,
-            margin: EdgeInsets.all(15),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            child: Container(
-              padding: EdgeInsets.all(15),
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.topLeft,
-                    child: const Text(
-                      "Notifikasi Terbaru",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+      body: CustomScrollView(
+        slivers: [
+          SliverList(
+              delegate: SliverChildListDelegate([
+            Card(
+              elevation: 5,
+              margin: EdgeInsets.all(15),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              child: Container(
+                padding: EdgeInsets.all(15),
+                height: 300,
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: const Text(
+                        "Notifikasi Terbaru",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                  FutureBuilder(
-                    future: getDataPesanan(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) print(snapshot.error);
+                    FutureBuilder(
+                      future: getDataPesanan(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) print(snapshot.error);
 
-                      return snapshot.hasData
-                          ? ListNotif(data: snapshot.data)
-                          : const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(top: 15, left: 20, right: 15),
-            child: const Text(
-              "Statistik Peminjaman",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Card(
-            elevation: 5,
-            margin: EdgeInsets.all(15),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            child: Container(
-              padding: EdgeInsets.all(15),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      child: Text(
-                          "Ruang yang sering dilakukan peminjaman dalam bulan ini adalah Lap Atas"),
+                        return snapshot.hasData
+                            ? ListNotif(data: snapshot.data)
+                            : const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                      },
                     ),
-                  ),
-                  Expanded(
-                    child: PieChart(
-                      chartType: ChartType.ring,
-                      dataMap: dataMapRuang,
-                      animationDuration: Duration(milliseconds: 1000),
-                      baseChartColor: Colors.grey.withOpacity(0.5),
-                      colorList: [Colors.greenAccent],
-                      chartRadius: MediaQuery.of(context).size.width / 6,
-                      legendOptions: LegendOptions(
-                        showLegends: false,
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 15, left: 20, right: 15),
+              child: const Text(
+                "Statistik Peminjaman",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Card(
+              elevation: 5,
+              margin: EdgeInsets.all(15),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              child: Container(
+                padding: EdgeInsets.all(15),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        child: Text(
+                            "Ruang yang sering dilakukan peminjaman dalam bulan ini adalah Lap Atas"),
                       ),
+                    ),
+                    Expanded(
+                      child: PieChart(
+                        chartType: ChartType.ring,
+                        dataMap: dataMapRuang,
+                        animationDuration: Duration(milliseconds: 1000),
+                        baseChartColor: Colors.grey.withOpacity(0.5),
+                        colorList: [Colors.greenAccent],
+                        chartRadius: MediaQuery.of(context).size.width / 6,
+                        legendOptions: LegendOptions(
+                          showLegends: false,
+                        ),
+                        chartValuesOptions: ChartValuesOptions(
+                          showChartValuesInPercentage: true,
+                        ),
+                        totalValue: 15,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Card(
+              elevation: 5,
+              margin: EdgeInsets.all(15),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              child: Container(
+                padding: EdgeInsets.all(15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    PieChart(
+                      dataMap: dataMap1,
+                      animationDuration: Duration(milliseconds: 1000),
+                      chartLegendSpacing: 5,
+                      chartRadius: MediaQuery.of(context).size.width / 4.5,
                       chartValuesOptions: ChartValuesOptions(
                         showChartValuesInPercentage: true,
                       ),
-                      totalValue: 15,
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Card(
-            elevation: 5,
-            margin: EdgeInsets.all(15),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            child: Container(
-              padding: EdgeInsets.all(15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  PieChart(
-                    dataMap: dataMap1,
-                    animationDuration: Duration(milliseconds: 1000),
-                    chartLegendSpacing: 5,
-                    chartRadius: MediaQuery.of(context).size.width / 4.5,
-                    chartValuesOptions: ChartValuesOptions(
-                      showChartValuesInPercentage: true,
-                    ),
-                  ),
-                  PieChart(
-                    dataMap: dataMap2,
-                    animationDuration: Duration(milliseconds: 1000),
-                    chartLegendSpacing: 5,
-                    chartRadius: MediaQuery.of(context).size.width / 4.5,
-                    chartValuesOptions: ChartValuesOptions(
-                      showChartValuesInPercentage: true,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            height: 300,
-            child: Card(
-              elevation: 5,
-              margin: EdgeInsets.all(15),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      "Statisktik Peminjaman Ruang Tiap Tahun",
-                    ),
-                    Expanded(
-                      child: charts.BarChart(
-                        series1,
-                        animate: true,
+                    PieChart(
+                      dataMap: dataMap2,
+                      animationDuration: Duration(milliseconds: 1000),
+                      chartLegendSpacing: 5,
+                      chartRadius: MediaQuery.of(context).size.width / 4.5,
+                      chartValuesOptions: ChartValuesOptions(
+                        showChartValuesInPercentage: true,
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-          ),
-          Container(
-            height: 300,
-            child: Card(
-              elevation: 5,
-              margin: EdgeInsets.all(15),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      "Statisktik Peminjaman Ruang Tiap Bulan",
-                    ),
-                    Expanded(
-                      child: charts.BarChart(
-                        series2,
-                        animate: true,
+            Container(
+              height: 300,
+              child: Card(
+                elevation: 5,
+                margin: EdgeInsets.all(15),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        "Statisktik Peminjaman Ruang Tiap Tahun",
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        child: charts.BarChart(
+                          series1,
+                          animate: true,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
+            Container(
+              height: 300,
+              child: Card(
+                elevation: 5,
+                margin: EdgeInsets.all(15),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        "Statisktik Peminjaman Ruang Tiap Bulan",
+                      ),
+                      Expanded(
+                        child: charts.BarChart(
+                          series2,
+                          animate: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ])),
         ],
       ),
     );
   }
 }
 
-class ListNotif extends StatelessWidget {
+class ListNotif extends StatefulWidget {
   ListNotif({Key? key, this.data}) : super(key: key);
   var data;
 
   @override
+  State<ListNotif> createState() => _ListNotifState();
+}
+
+class _ListNotifState extends State<ListNotif> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  String convertDate(time) {
+    var date = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+    var result =
+        "${date.day}-${date.month}-${date.year} ${date.hour}:${date.minute}:${date.second}";
+
+    return result;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Padding(padding: EdgeInsets.only(top: 10)),
-        Container(
-          alignment: Alignment.topLeft,
-          child: Text(
-            "waktuPinjam",
-            style: TextStyle(fontSize: 14.0, color: Colors.grey),
-          ),
-        ),
-        Container(
-          alignment: Alignment.topLeft,
-          child: const Text(
-            "Peminjaman ruang Fiqri Aidin di setujui",
-            style: TextStyle(fontSize: 16.0),
-          ),
-        ),
-      ],
+    return Expanded(
+      child: ListView.builder(
+        itemCount: widget.data == null ? 0 : widget.data.length,
+        itemBuilder: (context, index) {
+          return Column(
+            children: [
+              const Padding(padding: EdgeInsets.only(top: 10)),
+              Container(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  convertDate(widget.data[index]["waktuPinjam"]),
+                  style: TextStyle(fontSize: 14.0, color: Colors.grey),
+                ),
+              ),
+              Container(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Peminjaman ruang ${widget.data[index]["peminjamMhs"].toString() == "[]" ? widget.data[index]["peminjamPgw"].toString() : widget.data[index]["peminjamMhs"].toString()} berstatus ${widget.data[index]["status"]}",
+                  style: TextStyle(fontSize: 16.0),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
