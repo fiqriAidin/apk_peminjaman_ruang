@@ -18,6 +18,7 @@ class PesanRuang extends StatefulWidget {
 }
 
 class _PesanRuangState extends State<PesanRuang> {
+  List<dynamic> pesanan = [];
   List<dynamic> ruang = [];
   String? _ruang;
   List<String> dokumen = [
@@ -46,8 +47,25 @@ class _PesanRuangState extends State<PesanRuang> {
     return result;
   }
 
+  String convertDate(time) {
+    var value = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+    var result = "${value.day}-${value.month}-${value.year}";
+
+    return result;
+  }
+
   void kirimValue() async {
-    print(_statusPeminjam);
+    // print(_statusPeminjam);
+    bool statusPesanan = false;
+    await pesanan.map((e) {
+      if (e['ruang'] == _ruang && e['status'] != "Menunggu") {
+        if (convertDate(e['waktuMulai']) ==
+            "${date.day}-${date.month}-${date.year}") {
+          statusPesanan = true;
+        }
+      }
+    }).toList();
+
     var tempDokumen = "";
     var tempStatusPeminjam = _statusPeminjam == null
         ? "6"
@@ -105,6 +123,24 @@ class _PesanRuangState extends State<PesanRuang> {
           return alert;
         },
       );
+    } else if (statusPesanan) {
+      AlertDialog alert = AlertDialog(
+        title: const Text("Peringatan !!!"),
+        content: Text(
+            "Ruang tersebut sudah dipesan di waktu yang sama oleh user lain"),
+        actions: [
+          ElevatedButton(
+            child: const Text("Oke"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      );
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
     } else {
       if (widget.data == null) {
         createDataPesanan(
@@ -141,6 +177,7 @@ class _PesanRuangState extends State<PesanRuang> {
 
       Navigator.of(context).pop();
     }
+    print(statusPesanan);
   }
 
   selectDate(BuildContext context) async {
@@ -188,12 +225,24 @@ class _PesanRuangState extends State<PesanRuang> {
     });
   }
 
+  void listPesanan() async {
+    final response = await http.get(Uri.parse(
+        'https://project.mis.pens.ac.id/mis142/API/api_view.php?apicall=get_pesanan'));
+    var map = json.decode(response.body);
+    var data = map["result"];
+    setState(() {
+      pesanan = data;
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
     listRuang();
+    listPesanan();
+
     if (widget.data != null) {
       var tempDateMulai = DateTime.fromMillisecondsSinceEpoch(
           int.parse(widget.data['waktuMulai']));

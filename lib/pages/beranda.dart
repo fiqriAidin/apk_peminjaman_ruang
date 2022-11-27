@@ -207,22 +207,26 @@ class Beranda extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    PieChart(
-                      dataMap: dataMap1,
-                      animationDuration: Duration(milliseconds: 1000),
-                      chartLegendSpacing: 5,
-                      chartRadius: MediaQuery.of(context).size.width / 4.5,
-                      chartValuesOptions: ChartValuesOptions(
-                        showChartValuesInPercentage: true,
+                    Expanded(
+                      child: PieChart(
+                        dataMap: dataMap1,
+                        animationDuration: Duration(milliseconds: 1000),
+                        chartLegendSpacing: 5,
+                        chartRadius: MediaQuery.of(context).size.width / 4.5,
+                        chartValuesOptions: ChartValuesOptions(
+                          showChartValuesInPercentage: true,
+                        ),
                       ),
                     ),
-                    PieChart(
-                      dataMap: dataMap2,
-                      animationDuration: Duration(milliseconds: 1000),
-                      chartLegendSpacing: 5,
-                      chartRadius: MediaQuery.of(context).size.width / 4.5,
-                      chartValuesOptions: ChartValuesOptions(
-                        showChartValuesInPercentage: true,
+                    Expanded(
+                      child: PieChart(
+                        dataMap: dataMap2,
+                        animationDuration: Duration(milliseconds: 1000),
+                        chartLegendSpacing: 5,
+                        chartRadius: MediaQuery.of(context).size.width / 4.5,
+                        chartValuesOptions: ChartValuesOptions(
+                          showChartValuesInPercentage: true,
+                        ),
                       ),
                     ),
                   ],
@@ -312,29 +316,31 @@ class _ListNotifState extends State<ListNotif> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView.builder(
-        itemCount: widget.data == null ? 0 : widget.data.length,
-        itemBuilder: (context, index) {
-          return Column(
-            children: [
-              const Padding(padding: EdgeInsets.only(top: 10)),
-              Container(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  convertDate(widget.data[index]["waktuPinjam"]),
-                  style: TextStyle(fontSize: 14.0, color: Colors.grey),
+      child: Scrollbar(
+        child: ListView.builder(
+          itemCount: widget.data == null ? 0 : widget.data.length,
+          itemBuilder: (context, index) {
+            return Column(
+              children: [
+                const Padding(padding: EdgeInsets.only(top: 10)),
+                Container(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    convertDate(widget.data[index]["waktuPinjam"]),
+                    style: TextStyle(fontSize: 14.0, color: Colors.grey),
+                  ),
                 ),
-              ),
-              Container(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  "Peminjaman ruang ${widget.data[index]["peminjamMhs"].toString() == "[]" ? widget.data[index]["peminjamPgw"].toString() : widget.data[index]["peminjamMhs"].toString()} berstatus ${widget.data[index]["status"]}",
-                  style: TextStyle(fontSize: 16.0),
+                Container(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Peminjaman ruang ${widget.data[index]["peminjamMhs"].toString() == "[]" ? widget.data[index]["peminjamPgw"].toString() : widget.data[index]["peminjamMhs"].toString()} berstatus ${widget.data[index]["status"]}",
+                    style: TextStyle(fontSize: 16.0),
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
