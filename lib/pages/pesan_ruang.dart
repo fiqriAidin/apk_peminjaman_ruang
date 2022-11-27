@@ -58,7 +58,7 @@ class _PesanRuangState extends State<PesanRuang> {
     // print(_statusPeminjam);
     bool statusPesanan = false;
     await pesanan.map((e) {
-      if (e['ruang'] == _ruang && e['status'] != "Menunggu") {
+      if (e['ruang'] == _ruang && e['status'] != "Ditolak") {
         if (convertDate(e['waktuMulai']) ==
             "${date.day}-${date.month}-${date.year}") {
           statusPesanan = true;
@@ -177,7 +177,6 @@ class _PesanRuangState extends State<PesanRuang> {
 
       Navigator.of(context).pop();
     }
-    print(statusPesanan);
   }
 
   selectDate(BuildContext context) async {
