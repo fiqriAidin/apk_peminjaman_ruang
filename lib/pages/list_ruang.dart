@@ -355,13 +355,13 @@ class _ListValueState extends State<ListValue> {
                       trailing: const Icon(Icons.arrow_forward_ios),
                       onTap: () {
                         viewDetail(
-                          widget.list[index]["nomor"],
-                          widget.list[index]["keterangan"],
-                          widget.list[index]["ruang"],
-                          widget.list[index]["informasi"],
-                          widget.list[index]["tanggalAwalOff"],
-                          widget.list[index]["tanggalAkhirOff"],
-                          widget.list[index]["kode"],
+                          newData[index]["nomor"],
+                          newData[index]["keterangan"],
+                          newData[index]["ruang"],
+                          newData[index]["informasi"],
+                          newData[index]["tanggalAwalOff"],
+                          newData[index]["tanggalAkhirOff"],
+                          newData[index]["kode"],
                         );
                       },
                     ),
