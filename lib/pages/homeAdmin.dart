@@ -39,6 +39,7 @@ class _HomeAdminState extends State<HomeAdmin>
           MasterStatus(),
           ListRuang(
             role: "admin",
+            dataRole: widget.dataUsers,
           ),
           ListPesanan(
             role: "admin",

@@ -5,8 +5,9 @@ import 'package:peminjaman_ruang/pages/create_ruang.dart';
 import 'package:peminjaman_ruang/utils/api.dart';
 
 class ListRuang extends StatefulWidget {
-  ListRuang({Key? key, this.role}) : super(key: key);
+  ListRuang({Key? key, this.role, this.dataRole}) : super(key: key);
   var role;
+  var dataRole;
 
   @override
   _ListRuangState createState() => _ListRuangState();
@@ -70,6 +71,7 @@ class _ListRuangState extends State<ListRuang> {
                 ? ListValue(
                     list: snapshot.data,
                     role: widget.role,
+                    idRole: widget.dataRole['NIP'],
                   )
                 : const Center(
                     child: CircularProgressIndicator(),
@@ -84,7 +86,9 @@ class _ListRuangState extends State<ListRuang> {
               backgroundColor: Colors.green,
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return CreateRuang();
+                  return CreateRuang(
+                    pengelola: widget.dataRole['NIP'],
+                  );
                 }));
               },
             )
@@ -94,10 +98,12 @@ class _ListRuangState extends State<ListRuang> {
 }
 
 class ListValue extends StatefulWidget {
-  ListValue({Key? key, this.list, this.condition, this.role}) : super(key: key);
+  ListValue({Key? key, this.list, this.condition, this.role, this.idRole})
+      : super(key: key);
   var list;
   var condition;
   var role;
+  var idRole;
 
   @override
   State<ListValue> createState() => _ListValueState();
@@ -159,11 +165,10 @@ class _ListValueState extends State<ListValue> {
     );
   }
 
-  void viewDetail(nomor, keterangan, ruang, informasi, tanggalAwalOff,
-      tanggalAkhirOff, kode) {
+  void viewDetail(value) {
     AlertDialog alertDialog = AlertDialog(
       content: Container(
-        height: 470,
+        height: 570,
         child: Column(
           children: [
             Container(
@@ -176,7 +181,7 @@ class _ListValueState extends State<ListValue> {
                 ),
               ),
               padding: const EdgeInsets.all(5.0),
-              child: Text(keterangan),
+              child: Text(value['keterangan']),
             ),
             const Padding(padding: EdgeInsets.only(top: 10.0)),
             Container(
@@ -189,7 +194,32 @@ class _ListValueState extends State<ListValue> {
                 ),
               ),
               padding: const EdgeInsets.all(5.0),
-              child: Text(ruang),
+              child: Text(value['ruang']),
+            ),
+            const Padding(padding: EdgeInsets.only(top: 10.0)),
+            Container(alignment: Alignment.topLeft, child: Text("Pengelola :")),
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: 1),
+                ),
+              ),
+              padding: const EdgeInsets.all(5.0),
+              child: Text(value['pengelola'].toString()),
+            ),
+            const Padding(padding: EdgeInsets.only(top: 10.0)),
+            Container(
+                alignment: Alignment.topLeft, child: Text("Kapasitas Ruang :")),
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(width: 1),
+                ),
+              ),
+              padding: const EdgeInsets.all(5.0),
+              child: Text("${value['kapasitas']} Orang"),
             ),
             const Padding(padding: EdgeInsets.only(top: 10.0)),
             Container(alignment: Alignment.topLeft, child: Text("Deskripsi :")),
@@ -201,7 +231,7 @@ class _ListValueState extends State<ListValue> {
                 ),
               ),
               padding: const EdgeInsets.all(5.0),
-              child: Text(informasi),
+              child: Text(value['informasi']),
             ),
             const Padding(padding: EdgeInsets.only(top: 10.0)),
             Container(
@@ -215,7 +245,7 @@ class _ListValueState extends State<ListValue> {
                 ),
               ),
               padding: const EdgeInsets.all(5.0),
-              child: Text(convertDate(tanggalAwalOff)),
+              child: Text(convertDate(value['tanggalAwalOff'])),
             ),
             const Padding(padding: EdgeInsets.only(top: 10.0)),
             Container(
@@ -229,7 +259,7 @@ class _ListValueState extends State<ListValue> {
                 ),
               ),
               padding: const EdgeInsets.all(5.0),
-              child: Text(convertDate(tanggalAkhirOff)),
+              child: Text(convertDate(value['tanggalAkhirOff'])),
             ),
             const Padding(padding: EdgeInsets.only(top: 10.0)),
             Container(alignment: Alignment.topLeft, child: Text("Status :")),
@@ -241,7 +271,7 @@ class _ListValueState extends State<ListValue> {
                 ),
               ),
               padding: const EdgeInsets.all(5.0),
-              child: Text(kode.toString()),
+              child: Text(value['kode'].toString()),
             ),
             const Padding(padding: EdgeInsets.only(top: 10.0)),
           ],
@@ -260,13 +290,15 @@ class _ListValueState extends State<ListValue> {
                   Navigator.of(context).pop();
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return CreateRuang(
-                      nomor: nomor,
-                      ruang: ruang,
-                      keterangan: keterangan,
-                      informasi: informasi,
-                      tanggalAwalOff: tanggalAwalOff,
-                      tanggalAkhirOff: tanggalAkhirOff,
-                      kode: kode,
+                      nomor: value['nomor'],
+                      ruang: value['ruang'],
+                      keterangan: value['keterangan'],
+                      pengelola: widget.idRole,
+                      kapasitas: value['kapasitas'],
+                      informasi: value['informasi'],
+                      tanggalAwalOff: value['tanggalAwalOff'],
+                      tanggalAkhirOff: value['tanggalAkhirOff'],
+                      kode: value['kode'],
                     );
                   }));
                 },
@@ -278,7 +310,7 @@ class _ListValueState extends State<ListValue> {
             ? ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  confirm(nomor, keterangan);
+                  confirm(value['nomor'], value['keterangan']);
                 },
                 child: const Icon(Icons.delete),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
@@ -354,15 +386,7 @@ class _ListValueState extends State<ListValue> {
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios),
                       onTap: () {
-                        viewDetail(
-                          newData[index]["nomor"],
-                          newData[index]["keterangan"],
-                          newData[index]["ruang"],
-                          newData[index]["informasi"],
-                          newData[index]["tanggalAwalOff"],
-                          newData[index]["tanggalAkhirOff"],
-                          newData[index]["kode"],
-                        );
+                        viewDetail(newData[index]);
                       },
                     ),
                   ),

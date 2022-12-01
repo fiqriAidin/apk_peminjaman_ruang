@@ -58,13 +58,15 @@ void createDataStatus(status) {
 }
 
 // membuat data ruang baru
-void createDataRuang(
-    ruang, keterangan, informasi, tanggalAwalOff, tanggalAkhirOff, kode) async {
+void createDataRuang(ruang, keterangan, pengelola, kapasitas, informasi,
+    tanggalAwalOff, tanggalAkhirOff, kode) async {
   var url = Uri.parse(
       'https://project.mis.pens.ac.id/mis142/API/api_insert.php?apicall=create_ruang');
   http.post(url, body: {
     "ruang": ruang,
     "keterangan": keterangan,
+    "pengelola": pengelola,
+    "kapasitas": kapasitas,
     "informasi": informasi,
     "tanggalAwalOff": tanggalAwalOff,
     "tanggalAkhirOff": tanggalAkhirOff,
@@ -167,14 +169,16 @@ void updateDataStatus(nomor, status) {
 }
 
 // mengupdate data ruang
-void updateDataRuang(nomor, ruang, keterangan, informasi, tanggalAwalOff,
-    tanggalAkhirOff, kode) {
+void updateDataRuang(nomor, ruang, keterangan, pengelola, kapasitas, informasi,
+    tanggalAwalOff, tanggalAkhirOff, kode) {
   var url = Uri.parse(
       'https://project.mis.pens.ac.id/mis142/API/api_update.php?apicall=update_ruang');
   http.post(url, body: {
     "nomor": nomor,
     "ruang": ruang,
     "keterangan": keterangan,
+    "pengelola": pengelola,
+    "kapasitas": kapasitas,
     "informasi": informasi,
     "tanggalAwalOff": tanggalAwalOff,
     "tanggalAkhirOff": tanggalAkhirOff,

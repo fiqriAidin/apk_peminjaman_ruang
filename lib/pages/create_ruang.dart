@@ -10,6 +10,8 @@ class CreateRuang extends StatefulWidget {
       this.nomor,
       this.ruang,
       this.keterangan,
+      this.pengelola,
+      this.kapasitas,
       this.informasi,
       this.tanggalAwalOff,
       this.tanggalAkhirOff,
@@ -22,6 +24,8 @@ class CreateRuang extends StatefulWidget {
   var tanggalAwalOff;
   var tanggalAkhirOff;
   var kode;
+  var pengelola;
+  var kapasitas;
 
   @override
   _CreateRuangState createState() => _CreateRuangState();
@@ -34,6 +38,7 @@ class _CreateRuangState extends State<CreateRuang> {
   TextEditingController controllerRuang = TextEditingController();
   TextEditingController controllerKet = TextEditingController();
   TextEditingController controllerInfo = TextEditingController();
+  TextEditingController controllerKapasitas = TextEditingController();
 
   selectFirstDate(BuildContext context) async {
     final DateTime? selected = await showDatePicker(
@@ -85,6 +90,8 @@ class _CreateRuangState extends State<CreateRuang> {
       createDataRuang(
         controllerRuang.text,
         controllerKet.text,
+        widget.pengelola,
+        controllerKapasitas.text,
         controllerInfo.text,
         firstDate == DateTime(0) ? "" : "${firstDate.millisecondsSinceEpoch}",
         lastDate == DateTime(0) ? "" : "${lastDate.millisecondsSinceEpoch}",
@@ -96,10 +103,18 @@ class _CreateRuangState extends State<CreateRuang> {
   }
 
   void updateRuang() {
+    print(widget.nomor);
+    print(controllerRuang.text);
+    print(controllerKet.text);
+    print(widget.pengelola);
+    print(controllerKapasitas.text);
+    print(controllerInfo.text);
     updateDataRuang(
       widget.nomor,
       controllerRuang.text,
       controllerKet.text,
+      widget.pengelola,
+      controllerKapasitas.text,
       controllerInfo.text,
       firstDate == DateTime(0) ? "" : "${firstDate.millisecondsSinceEpoch}",
       lastDate == DateTime(0) ? "" : "${lastDate.millisecondsSinceEpoch}",
@@ -117,6 +132,7 @@ class _CreateRuangState extends State<CreateRuang> {
         controllerRuang.text = widget.ruang;
         controllerKet.text = widget.keterangan;
         controllerInfo.text = widget.informasi;
+        controllerKapasitas.text = widget.kapasitas;
         firstDate = widget.tanggalAwalOff == null
             ? DateTime(0)
             : DateTime.fromMillisecondsSinceEpoch(
@@ -162,6 +178,12 @@ class _CreateRuangState extends State<CreateRuang> {
                   controller: controllerKet,
                   label: "Nama Ruang",
                   hint: "Masukkan Nama Ruang",
+                ),
+                const Padding(padding: EdgeInsets.only(top: 20.0)),
+                InputForm(
+                  controller: controllerKapasitas,
+                  label: "Kapasitas Ruang",
+                  hint: "Masukkan Besar Kapasitas Ruang",
                 ),
                 const Padding(padding: EdgeInsets.only(top: 20.0)),
                 InputForm(
