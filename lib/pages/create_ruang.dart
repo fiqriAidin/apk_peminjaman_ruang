@@ -103,12 +103,6 @@ class _CreateRuangState extends State<CreateRuang> {
   }
 
   void updateRuang() {
-    print(widget.nomor);
-    print(controllerRuang.text);
-    print(controllerKet.text);
-    print(widget.pengelola);
-    print(controllerKapasitas.text);
-    print(controllerInfo.text);
     updateDataRuang(
       widget.nomor,
       controllerRuang.text,

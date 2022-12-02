@@ -71,7 +71,7 @@ class _ListRuangState extends State<ListRuang> {
                 ? ListValue(
                     list: snapshot.data,
                     role: widget.role,
-                    idRole: widget.dataRole['NIP'],
+                    idRole: widget.dataRole,
                   )
                 : const Center(
                     child: CircularProgressIndicator(),
@@ -293,7 +293,7 @@ class _ListValueState extends State<ListValue> {
                       nomor: value['nomor'],
                       ruang: value['ruang'],
                       keterangan: value['keterangan'],
-                      pengelola: widget.idRole,
+                      pengelola: widget.idRole['NIP'],
                       kapasitas: value['kapasitas'],
                       informasi: value['informasi'],
                       tanggalAwalOff: value['tanggalAwalOff'],
