@@ -29,6 +29,7 @@ class _PesanRuangState extends State<PesanRuang> {
   List<String> statusPeminjam = ["Internal", "External"];
   String? _statusPeminjam;
   String fileName = "Upload File";
+  var file;
   DateTime date = DateTime(0);
   TimeOfDay firstTime = const TimeOfDay(hour: 00, minute: 00);
   TimeOfDay lastTime = const TimeOfDay(hour: 00, minute: 00);
@@ -54,8 +55,21 @@ class _PesanRuangState extends State<PesanRuang> {
     return result;
   }
 
+  void uploadFile() async {
+    final result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      // print(result.files.first);
+      setState(() {
+        fileName = result.files.first.name;
+        file = result.files.single.path;
+      });
+    }
+  }
+
   void kirimValue() async {
-    // print(_statusPeminjam);
+    // print("Percobaan OM : ${file}");
+    uploadDataFile(file);
     bool statusPesanan = false;
     await pesanan.map((e) {
       if (e['ruang'] == _ruang && e['status'] != "Ditolak") {
@@ -409,15 +423,8 @@ class _PesanRuangState extends State<PesanRuang> {
                     ? InputDateTime(
                         icon: Icons.upload_file,
                         label: "  $fileName",
-                        onPressed: () async {
-                          final result = await FilePicker.platform.pickFiles();
-
-                          if (result != null) {
-                            final file = result.files.first;
-                            setState(() {
-                              fileName = file.name;
-                            });
-                          }
+                        onPressed: () {
+                          uploadFile();
                         },
                       )
                     : const Padding(padding: EdgeInsets.only(top: 0.0)),

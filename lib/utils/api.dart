@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import "package:flutter/material.dart";
 import 'package:http/http.dart' as http;
@@ -106,6 +107,19 @@ void createDataPesanan(
     "statusPeminjam": statusPeminjam,
     "dokumen": dokumen,
   });
+}
+
+// upload file ke server
+
+void uploadDataFile(filepath) async {
+  var url =
+      Uri.parse('https://project.mis.pens.ac.id/mis142/API/api_upload.php');
+  var request = http.MultipartRequest('POST', url);
+  request.files.add(http.MultipartFile.fromBytes(
+      'inputFile', File(filepath).readAsBytesSync(),
+      filename: filepath.split("/").last));
+  var res = await request.send();
+  print(res.reasonPhrase);
 }
 
 // update data pesanan
