@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peminjaman_ruang/pages/pesan_ruang.dart';
+import 'package:peminjaman_ruang/pages/viewFile.dart';
 import 'package:peminjaman_ruang/utils/api.dart';
 
 class DetailPesanan extends StatefulWidget {
@@ -308,6 +309,17 @@ class _DetailPesananState extends State<DetailPesanan> {
                   style: TextStyle(fontSize: 15),
                 ),
               ),
+              widget.data['statusDokumen'] == "1"
+                  ? ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return ViewFile(fileName: widget.data['dokumen']);
+                        }));
+                      },
+                      icon: Icon(Icons.file_open),
+                      label: Text("Lihat File"))
+                  : const Padding(padding: EdgeInsets.only(top: 0)),
               const Padding(padding: EdgeInsets.only(top: 15.0)),
               const Text(
                 "Status Terima Dokumen :",

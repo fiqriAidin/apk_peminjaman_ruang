@@ -31,6 +31,7 @@ class _PesanRuangState extends State<PesanRuang> {
   String? _statusPeminjam;
   String fileName = "Upload File";
   var file;
+  var tempDokumen;
   String? hashFileName;
   DateTime date = DateTime(0);
   TimeOfDay firstTime = const TimeOfDay(hour: 00, minute: 00);
@@ -42,8 +43,10 @@ class _PesanRuangState extends State<PesanRuang> {
   String convertTimestamp(hour, minute) {
     var tempHour = hour.toString().padLeft(2, '0');
     var tempMinute = minute.toString().padLeft(2, '0');
+    var tempMonth = date.month.toString().padLeft(2, '0');
+    var tempDay = date.day.toString().padLeft(2, '0');
     String tempString =
-        "${date.year}-${date.month}-${date.day} ${tempHour}:${tempMinute}:00";
+        "${date.year}-${tempMonth}-${tempDay} ${tempHour}:${tempMinute}:00";
     DateTime tempDate = DateTime.parse(tempString);
     // print(tempDate.millisecondsSinceEpoch);
     var result = "${tempDate.millisecondsSinceEpoch}";
@@ -118,6 +121,7 @@ class _PesanRuangState extends State<PesanRuang> {
     // print(hashFileName == null ? "ok" : "gagl");
 
     bool statusPesanan = false;
+
     await pesanan.map((e) {
       if (e['ruang'] == _ruang && e['status'] != "Ditolak") {
         if (convertDate(e['waktuMulai']) ==
@@ -127,7 +131,10 @@ class _PesanRuangState extends State<PesanRuang> {
       }
     }).toList();
 
-    var tempDokumen = hashFileName == null ? "" : hashFileName;
+    if (tempDokumen == null) {
+      tempDokumen = hashFileName == null ? "" : hashFileName;
+    }
+
     var tempStatusPeminjam = _statusPeminjam == null
         ? "6"
         : _statusPeminjam == "Internal"
@@ -168,7 +175,7 @@ class _PesanRuangState extends State<PesanRuang> {
           return alert;
         },
       );
-    } else if (statusPesanan) {
+    } else if (statusPesanan && widget.data == null) {
       AlertDialog alert = AlertDialog(
         title: const Text("Peringatan !!!"),
         content: Text(
@@ -186,7 +193,9 @@ class _PesanRuangState extends State<PesanRuang> {
           return alert;
         },
       );
-    } else if (_dokumen == "Diupload ke aplikasi" && hashFileName == null) {
+    } else if (_dokumen == "Diupload ke aplikasi" &&
+        hashFileName == null &&
+        widget.data == null) {
       AlertDialog alert = AlertDialog(
         title: const Text("Peringatan !!!"),
         content: Text("File PDF masih kosong"),
@@ -332,6 +341,7 @@ class _PesanRuangState extends State<PesanRuang> {
         lastTime = timeSelesai;
         _statusPeminjam =
             widget.data['statusPeminjam'] == "6" ? "Internal" : "External";
+        tempDokumen = widget.data['dokumen'];
       });
     }
   }
