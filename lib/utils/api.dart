@@ -111,15 +111,15 @@ void createDataPesanan(
 
 // upload file ke server
 
-void uploadDataFile(filepath) async {
+void uploadDataFile(filepath, fileName) async {
   var url =
       Uri.parse('https://project.mis.pens.ac.id/mis142/API/api_upload.php');
   var request = http.MultipartRequest('POST', url);
   request.files.add(http.MultipartFile.fromBytes(
       'inputFile', File(filepath).readAsBytesSync(),
-      filename: filepath.split("/").last));
+      filename: fileName));
   var res = await request.send();
-  print(res.reasonPhrase);
+  print(fileName);
 }
 
 // update data pesanan

@@ -5,6 +5,7 @@ import 'package:peminjaman_ruang/components/inputForm.dart';
 import 'package:peminjaman_ruang/utils/api.dart';
 
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 
 class PesanRuang extends StatefulWidget {
@@ -30,6 +31,7 @@ class _PesanRuangState extends State<PesanRuang> {
   String? _statusPeminjam;
   String fileName = "Upload File";
   var file;
+  String? hashFileName;
   DateTime date = DateTime(0);
   TimeOfDay firstTime = const TimeOfDay(hour: 00, minute: 00);
   TimeOfDay lastTime = const TimeOfDay(hour: 00, minute: 00);
@@ -55,21 +57,66 @@ class _PesanRuangState extends State<PesanRuang> {
     return result;
   }
 
+  String generateRandomString(int len) {
+    var r = Random();
+    const _chars =
+        'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    return List.generate(len, (index) => _chars[r.nextInt(_chars.length)])
+        .join();
+  }
+
   void uploadFile() async {
     final result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
-      // print(result.files.first);
-      setState(() {
-        fileName = result.files.first.name;
-        file = result.files.single.path;
-      });
+      // print( ? "oke" : "gagal");
+      if (result.files.first.extension != "pdf") {
+        AlertDialog alert = AlertDialog(
+          title: const Text("Peringatan !!!"),
+          content: Text("File yang di masukkan harus PDF"),
+          actions: [
+            ElevatedButton(
+              child: const Text("Oke"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+      } else if (result.files.first.size >= 5000000) {
+        AlertDialog alert = AlertDialog(
+          title: const Text("Peringatan !!!"),
+          content: Text("File yang dimasukkan terlalu besar, maximal 5 Mb"),
+          actions: [
+            ElevatedButton(
+              child: const Text("Oke"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) {
+            return alert;
+          },
+        );
+      } else {
+        setState(() {
+          fileName = result.files.first.name;
+          file = result.files.single.path;
+          hashFileName = "${generateRandomString(15)}.pdf";
+        });
+      }
     }
   }
 
   void kirimValue() async {
-    // print("Percobaan OM : ${file}");
-    uploadDataFile(file);
+    // print(hashFileName == null ? "ok" : "gagl");
+
     bool statusPesanan = false;
     await pesanan.map((e) {
       if (e['ruang'] == _ruang && e['status'] != "Ditolak") {
@@ -80,7 +127,7 @@ class _PesanRuangState extends State<PesanRuang> {
       }
     }).toList();
 
-    var tempDokumen = "";
+    var tempDokumen = hashFileName == null ? "" : hashFileName;
     var tempStatusPeminjam = _statusPeminjam == null
         ? "6"
         : _statusPeminjam == "Internal"
@@ -101,29 +148,13 @@ class _PesanRuangState extends State<PesanRuang> {
         controllerDesk.text == "" ||
         controllerNomor.text == "" ||
         _ruang == null ||
-        _dokumen == null) {
-      AlertDialog alert = AlertDialog(
-        title: const Text("Peringatan !!!"),
-        content: Text("Mohon untuk mengisi semua form yang ada"),
-        actions: [
-          ElevatedButton(
-            child: const Text("Oke"),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      );
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    } else if (date == DateTime(0) ||
+        _dokumen == null ||
+        date == DateTime(0) ||
         firstTime == TimeOfDay(hour: 00, minute: 00) ||
         lastTime == TimeOfDay(hour: 00, minute: 00)) {
       AlertDialog alert = AlertDialog(
         title: const Text("Peringatan !!!"),
-        content: Text("Waktu pemesanan wajib di isi"),
+        content: Text("Mohon untuk mengisi semua form yang ada"),
         actions: [
           ElevatedButton(
             child: const Text("Oke"),
@@ -155,6 +186,23 @@ class _PesanRuangState extends State<PesanRuang> {
           return alert;
         },
       );
+    } else if (_dokumen == "Diupload ke aplikasi" && hashFileName == null) {
+      AlertDialog alert = AlertDialog(
+        title: const Text("Peringatan !!!"),
+        content: Text("File PDF masih kosong"),
+        actions: [
+          ElevatedButton(
+            child: const Text("Oke"),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      );
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
     } else {
       if (widget.data == null) {
         createDataPesanan(
@@ -171,6 +219,9 @@ class _PesanRuangState extends State<PesanRuang> {
             "5",
             tempStatusPeminjam,
             tempDokumen);
+        if (_dokumen == "Diupload ke aplikasi" && hashFileName != null) {
+          uploadDataFile(file, hashFileName);
+        }
       } else {
         updateDataPesanan(
             widget.data['nomor'],
@@ -187,6 +238,9 @@ class _PesanRuangState extends State<PesanRuang> {
             widget.data['idStatus'],
             tempStatusPeminjam,
             tempDokumen);
+        if (_dokumen == "Diupload ke aplikasi" && hashFileName != null) {
+          uploadDataFile(file, hashFileName);
+        }
       }
 
       Navigator.of(context).pop();
