@@ -26,18 +26,31 @@ class Months {
   });
 }
 
-class Beranda extends StatelessWidget {
+class Beranda extends StatefulWidget {
   Beranda({Key? key}) : super(key: key);
 
-  final List<Years> data1 = [
-    Years(year: "2011", count: 50),
-    Years(year: "2012", count: 42),
-    Years(year: "2013", count: 45),
-    Years(year: "2014", count: 56),
-    Years(year: "2015", count: 38),
+  @override
+  State<Beranda> createState() => _BerandaState();
+}
+
+class _BerandaState extends State<Beranda> {
+  var tempData;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // setState(() {
+    //   dataMap1 = {"2012": 50};
+    // });
+    // print(tempData);
+  }
+
+  List<Years> data1 = [
+    Years(year: DateTime.now().year.toString(), count: 0),
   ];
 
-  final List<Months> data2 = [
+  List<Months> data2 = [
     Months(months: "Januari", count: 10),
     Months(months: "Februari", count: 12),
     Months(months: "Maret", count: 17),
@@ -46,10 +59,7 @@ class Beranda extends StatelessWidget {
   ];
 
   Map<String, double> dataMap1 = {
-    "2012": 50,
-    "2013": 42,
-    "2014": 45,
-    "2015": 38,
+    DateTime.now().year.toString(): 0,
   };
 
   Map<String, double> dataMap2 = {
@@ -62,6 +72,68 @@ class Beranda extends StatelessWidget {
   Map<String, double> dataMapRuang = {
     "Lap Atas": 5,
   };
+
+  int convertTahun(time) {
+    var value = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+    var result = value.year;
+
+    return result;
+  }
+
+  int convertBulan(time) {
+    var value = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+    var result = value.month;
+
+    return result;
+  }
+
+  void countDataPesanan(value) async {
+    var tempYear = DateTime.now().year;
+    var year1;
+    var year2;
+    var year3;
+    var year4;
+    var year5;
+    for (var i = 0; i < 5; i++) {
+      var count = 0;
+      await value.map((e) {
+        if (convertTahun(e['waktuMulai']) == tempYear) {
+          count = count + 1;
+        }
+      }).toList();
+      if (i == 0) {
+        year1 = count;
+      } else if (i == 1) {
+        year2 = count;
+      } else if (i == 2) {
+        year3 = count;
+      } else if (i == 3) {
+        year4 = count;
+      } else if (i == 4) {
+        year5 = count;
+      }
+      tempYear = tempYear - 1;
+    }
+    if (!mounted) return;
+
+    setState(() {
+      dataMap1 = {
+        DateTime.now().year.toString(): year1.toDouble(),
+        (DateTime.now().year - 1).toString(): year2.toDouble(),
+        (DateTime.now().year - 2).toString(): year3.toDouble(),
+        (DateTime.now().year - 3).toString(): year4.toDouble(),
+        (DateTime.now().year - 4).toString(): year5.toDouble(),
+      };
+      data1 = [
+        Years(year: DateTime.now().year.toString(), count: year1),
+        Years(year: (DateTime.now().year - 1).toString(), count: year2),
+        Years(year: (DateTime.now().year - 2).toString(), count: year3),
+        Years(year: (DateTime.now().year - 3).toString(), count: year4),
+        Years(year: (DateTime.now().year - 4).toString(), count: year5),
+      ];
+    });
+    // print(DateTime.now().month);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +148,7 @@ class Beranda extends StatelessWidget {
 
     List<charts.Series<Months, String>> series2 = [
       charts.Series(
-        id: "Years",
+        id: "Months",
         data: data2,
         domainFn: (Months series, _) => series.months,
         measureFn: (Months series, _) => series.count,
@@ -140,11 +212,14 @@ class Beranda extends StatelessWidget {
                       builder: (context, snapshot) {
                         if (snapshot.hasError) print(snapshot.error);
 
-                        return snapshot.hasData
-                            ? ListNotif(data: snapshot.data)
-                            : const Center(
-                                child: CircularProgressIndicator(),
-                              );
+                        if (snapshot.hasData) {
+                          countDataPesanan(snapshot.data);
+                          return ListNotif(data: snapshot.data);
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
                       },
                     ),
                   ],
