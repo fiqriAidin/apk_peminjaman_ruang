@@ -35,15 +35,13 @@ class Beranda extends StatefulWidget {
 
 class _BerandaState extends State<Beranda> {
   var tempData;
+  var totalPesanan;
+  final PageController controller = PageController();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // setState(() {
-    //   dataMap1 = {"2012": 50};
-    // });
-    // print(tempData);
   }
 
   List<Years> data1 = [
@@ -51,11 +49,7 @@ class _BerandaState extends State<Beranda> {
   ];
 
   List<Months> data2 = [
-    Months(months: "Januari", count: 10),
-    Months(months: "Februari", count: 12),
-    Months(months: "Maret", count: 17),
-    Months(months: "April", count: 16),
-    Months(months: "Mei", count: 20),
+    Months(months: DateTime.now().month.toString(), count: 0),
   ];
 
   Map<String, double> dataMap1 = {
@@ -63,14 +57,23 @@ class _BerandaState extends State<Beranda> {
   };
 
   Map<String, double> dataMap2 = {
-    "Januari": 10,
-    "Februari": 12,
-    "Maret": 17,
-    "April": 16,
+    DateTime.now().month.toString(): 0,
   };
 
-  Map<String, double> dataMapRuang = {
-    "Lap Atas": 5,
+  Map<String, double> dataMapTotal = {
+    "Total": 0,
+  };
+
+  Map<String, double> dataMapMenunggu = {
+    "Menunggu": 0,
+  };
+
+  Map<String, double> dataMapSetuju = {
+    "Setuju": 0,
+  };
+
+  Map<String, double> dataMapTolak = {
+    "Tolak": 0,
   };
 
   int convertTahun(time) {
@@ -80,43 +83,143 @@ class _BerandaState extends State<Beranda> {
     return result;
   }
 
-  int convertBulan(time) {
+  String convertBulan(time) {
     var value = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
-    var result = value.month;
+    var result = "${value.month}-${value.year}";
+
+    return result;
+  }
+
+  String convertToString(value) {
+    var result = "";
+
+    switch (value) {
+      case 1:
+        result = "Januari";
+        break;
+      case 2:
+        result = "Februari";
+        break;
+      case 3:
+        result = "Maret";
+        break;
+      case 4:
+        result = "April";
+        break;
+      case 5:
+        result = "Mei";
+        break;
+      case 6:
+        result = "Juni";
+        break;
+      case 7:
+        result = "Juli";
+        break;
+      case 8:
+        result = "Agustus";
+        break;
+      case 9:
+        result = "September";
+        break;
+      case 10:
+        result = "Oktober";
+        break;
+      case 11:
+        result = "November";
+        break;
+      case 12:
+        result = "Desember";
+        break;
+      default:
+    }
 
     return result;
   }
 
   void countDataPesanan(value) async {
+    // print(DateTime.january - 2);
     var tempYear = DateTime.now().year;
+    var tempBulan = DateTime.now().month;
+    var menunggu;
+    var tolak;
+    var setuju;
     var year1;
     var year2;
     var year3;
     var year4;
     var year5;
-    for (var i = 0; i < 5; i++) {
-      var count = 0;
+    var month1;
+    var month2;
+    var month3;
+    var month4;
+    var month5;
+
+    for (var i = 1; i <= 5; i++) {
+      var countTahun = 0;
+      var countBulan = 0;
+      var countTotal = 0;
+      var countMenunggu = 0;
+      var countSetuju = 0;
+      var countTolak = 0;
       await value.map((e) {
+        countTotal = countTotal + 1;
         if (convertTahun(e['waktuMulai']) == tempYear) {
-          count = count + 1;
+          countTahun = countTahun + 1;
+        }
+        if (convertBulan(e['waktuMulai']) ==
+            "${tempBulan}-${DateTime.now().year}") {
+          countBulan = countBulan + 1;
+        }
+        if (e['idStatus'].toString() == "5") {
+          countMenunggu = countMenunggu + 1;
+        }
+        if (e['idStatus'].toString() == "4") {
+          countTolak = countTolak + 1;
+        }
+        if (e['idStatus'].toString() == "3") {
+          countSetuju = countSetuju + 1;
         }
       }).toList();
-      if (i == 0) {
-        year1 = count;
-      } else if (i == 1) {
-        year2 = count;
+      totalPesanan = countTotal;
+      menunggu = countMenunggu;
+      tolak = countTolak;
+      setuju = countSetuju;
+      if (i == 1) {
+        year1 = countTahun;
+        month1 = countBulan;
       } else if (i == 2) {
-        year3 = count;
+        year2 = countTahun;
+        month2 = countBulan;
       } else if (i == 3) {
-        year4 = count;
+        year3 = countTahun;
+        month3 = countBulan;
       } else if (i == 4) {
-        year5 = count;
+        year4 = countTahun;
+        month4 = countBulan;
+      } else if (i == 5) {
+        year5 = countTahun;
+        month5 = countBulan;
       }
+      // print("${tempBulan} = ${countBulan}");
+
       tempYear = tempYear - 1;
+      tempBulan = tempBulan - 1;
     }
     if (!mounted) return;
 
     setState(() {
+      dataMapTotal = {
+        "Total": totalPesanan.toDouble(),
+      };
+      dataMapMenunggu = {
+        "Menunggu": menunggu.toDouble(),
+      };
+      dataMapTolak = {
+        "Tolak": tolak.toDouble(),
+      };
+      dataMapSetuju = {
+        "Setuju": setuju.toDouble(),
+      };
       dataMap1 = {
         DateTime.now().year.toString(): year1.toDouble(),
         (DateTime.now().year - 1).toString(): year2.toDouble(),
@@ -124,12 +227,30 @@ class _BerandaState extends State<Beranda> {
         (DateTime.now().year - 3).toString(): year4.toDouble(),
         (DateTime.now().year - 4).toString(): year5.toDouble(),
       };
+      dataMap2 = {
+        DateTime.now().month.toString(): month1.toDouble(),
+        (DateTime.now().month - 1).toString(): month2.toDouble(),
+        (DateTime.now().month - 2).toString(): month3.toDouble(),
+        (DateTime.now().month - 3).toString(): month4.toDouble(),
+        (DateTime.now().month - 4).toString(): month5.toDouble(),
+      };
       data1 = [
         Years(year: DateTime.now().year.toString(), count: year1),
         Years(year: (DateTime.now().year - 1).toString(), count: year2),
         Years(year: (DateTime.now().year - 2).toString(), count: year3),
         Years(year: (DateTime.now().year - 3).toString(), count: year4),
         Years(year: (DateTime.now().year - 4).toString(), count: year5),
+      ];
+      data2 = [
+        Months(months: convertToString(DateTime.now().month), count: month1),
+        Months(
+            months: convertToString(DateTime.now().month - 1), count: month2),
+        Months(
+            months: convertToString(DateTime.now().month - 2), count: month3),
+        Months(
+            months: convertToString(DateTime.now().month - 3), count: month4),
+        Months(
+            months: convertToString(DateTime.now().month - 4), count: month5),
       ];
     });
     // print(DateTime.now().month);
@@ -236,40 +357,40 @@ class _BerandaState extends State<Beranda> {
                 ),
               ),
             ),
-            Card(
-              elevation: 5,
-              margin: EdgeInsets.all(15),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              child: Container(
-                padding: EdgeInsets.all(15),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        child: Text(
-                            "Ruang yang sering dilakukan peminjaman dalam bulan ini adalah Lap Atas"),
-                      ),
-                    ),
-                    Expanded(
-                      child: PieChart(
-                        chartType: ChartType.ring,
-                        dataMap: dataMapRuang,
-                        animationDuration: Duration(milliseconds: 1000),
-                        baseChartColor: Colors.grey.withOpacity(0.5),
-                        colorList: [Colors.greenAccent],
-                        chartRadius: MediaQuery.of(context).size.width / 6,
-                        legendOptions: LegendOptions(
-                          showLegends: false,
-                        ),
-                        chartValuesOptions: ChartValuesOptions(
-                          showChartValuesInPercentage: true,
-                        ),
-                        totalValue: 15,
-                      ),
-                    ),
-                  ],
-                ),
+            Container(
+              height: 180,
+              child: PageView(
+                controller: controller,
+                children: [
+                  ViewStatistik(
+                    text: "Total Pesanan Ruang",
+                    data: dataMapTotal,
+                    color: Colors.blue,
+                    totalValue:
+                        totalPesanan == null ? 1 : totalPesanan.toDouble(),
+                  ),
+                  ViewStatistik(
+                    text: "Pesanan Ruang Menunggu",
+                    data: dataMapMenunggu,
+                    color: Colors.yellow,
+                    totalValue:
+                        totalPesanan == null ? 1 : totalPesanan.toDouble(),
+                  ),
+                  ViewStatistik(
+                    text: "Pesanan Ruang Ditolak",
+                    data: dataMapTolak,
+                    color: Colors.red,
+                    totalValue:
+                        totalPesanan == null ? 1 : totalPesanan.toDouble(),
+                  ),
+                  ViewStatistik(
+                    text: "Pesanan Ruang Disetujui",
+                    data: dataMapSetuju,
+                    color: Colors.green,
+                    totalValue:
+                        totalPesanan == null ? 1 : totalPesanan.toDouble(),
+                  ),
+                ],
               ),
             ),
             Card(
@@ -415,6 +536,86 @@ class _ListNotifState extends State<ListNotif> {
               ],
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class ViewStatistik extends StatelessWidget {
+  ViewStatistik(
+      {Key? key, this.data, this.totalValue, required this.text, this.color})
+      : super(key: key);
+  var data;
+  var totalValue;
+  String text;
+  var color;
+
+  String countData() {
+    var value;
+    if (data['Total'] != null) {
+      value = data['Total'].toString();
+    }
+    if (data['Menunggu'] != null) {
+      value = data['Menunggu'].toString();
+    }
+    if (data['Tolak'] != null) {
+      value = data['Tolak'].toString();
+    }
+    if (data['Setuju'] != null) {
+      value = data['Setuju'].toString();
+    }
+    return value;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // print(data["Tolak"]);
+    return Card(
+      elevation: 5,
+      margin: EdgeInsets.all(15),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Container(
+        padding: EdgeInsets.all(15),
+        child: Row(
+          children: [
+            Column(
+              children: [
+                Expanded(
+                  child: Container(
+                    child: Text(text, style: TextStyle(fontSize: 16)),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    child: Text(countData(), style: TextStyle(fontSize: 35)),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    child: Text("Data", style: TextStyle(fontSize: 15)),
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: PieChart(
+                chartType: ChartType.ring,
+                dataMap: data,
+                animationDuration: Duration(milliseconds: 1000),
+                baseChartColor: Colors.grey.withOpacity(0.5),
+                colorList: [color],
+                chartRadius: MediaQuery.of(context).size.width / 5,
+                legendOptions: LegendOptions(
+                  showLegends: false,
+                ),
+                chartValuesOptions: ChartValuesOptions(
+                  showChartValuesInPercentage: true,
+                ),
+                totalValue: totalValue.toDouble(),
+              ),
+            ),
+          ],
         ),
       ),
     );
