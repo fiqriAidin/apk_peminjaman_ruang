@@ -131,7 +131,9 @@ class _PesanRuangState extends State<PesanRuang> {
       }
     }).toList();
 
-    if (tempDokumen == null) {
+    if (hashFileName != null) {
+      tempDokumen = hashFileName;
+    } else if (tempDokumen == null) {
       tempDokumen = hashFileName == null ? "" : hashFileName;
     }
 
@@ -328,21 +330,19 @@ class _PesanRuangState extends State<PesanRuang> {
           TimeOfDay(hour: tempDateMulai.hour, minute: tempDateMulai.minute);
       TimeOfDay timeSelesai =
           TimeOfDay(hour: tempDateSelesai.hour, minute: tempDateSelesai.minute);
-      setState(() {
-        controllerJudul.text = widget.data['judul'];
-        controllerDesk.text = widget.data['deskripsi'];
-        _ruang = widget.data['ruang'];
-        controllerNomor.text = widget.data['nomorHp'];
-        _dokumen = widget.data['statusDokumen'] == "1"
-            ? "Diupload ke aplikasi"
-            : "Diserahkan Hardcopy";
-        date = tempDateMulai;
-        firstTime = timeMulai;
-        lastTime = timeSelesai;
-        _statusPeminjam =
-            widget.data['statusPeminjam'] == "6" ? "Internal" : "External";
-        tempDokumen = widget.data['dokumen'];
-      });
+      controllerJudul.text = widget.data['judul'];
+      controllerDesk.text = widget.data['deskripsi'];
+      _ruang = widget.data['ruang'];
+      controllerNomor.text = widget.data['nomorHp'];
+      _dokumen = widget.data['statusDokumen'] == "1"
+          ? "Diupload ke aplikasi"
+          : "Diserahkan Hardcopy";
+      date = tempDateMulai;
+      firstTime = timeMulai;
+      lastTime = timeSelesai;
+      _statusPeminjam =
+          widget.data['statusPeminjam'] == "6" ? "Internal" : "External";
+      tempDokumen = widget.data['dokumen'];
     }
   }
 
@@ -483,15 +483,16 @@ class _PesanRuangState extends State<PesanRuang> {
                   },
                 ),
                 const Padding(padding: EdgeInsets.only(top: 20.0)),
-                _dokumen == "Diupload ke aplikasi"
-                    ? InputDateTime(
-                        icon: Icons.upload_file,
-                        label: "  $fileName",
-                        onPressed: () {
-                          uploadFile();
-                        },
-                      )
-                    : const Padding(padding: EdgeInsets.only(top: 0.0)),
+                if (_dokumen == "Diupload ke aplikasi")
+                  Container(
+                    child: InputDateTime(
+                      icon: Icons.upload_file,
+                      label: fileName,
+                      onPressed: () {
+                        uploadFile();
+                      },
+                    ),
+                  ),
               ],
             ),
           ),

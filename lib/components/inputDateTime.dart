@@ -18,11 +18,14 @@ class _InputDateTimeState extends State<InputDateTime> {
       child: Row(
         children: [
           Icon(widget.icon, color: Colors.black45),
-          Text(widget.label, style: const TextStyle(color: Colors.black45)),
+          Padding(padding: EdgeInsets.only(right: 10.0)),
+          Expanded(
+              child: Text(widget.label,
+                  style: const TextStyle(color: Colors.black45))),
         ],
       ),
       style: ElevatedButton.styleFrom(
-        primary: Colors.white,
+        backgroundColor: Colors.white,
         minimumSize: const Size.fromHeight(60),
         shape: RoundedRectangleBorder(
           side: const BorderSide(color: Colors.black45, width: 1),
