@@ -20,10 +20,8 @@ class ViewFile extends StatelessWidget {
               bottomRight: Radius.circular(25)),
         ),
       ),
-      body: Container(
-        child: SfPdfViewer.network(
-            "https://project.mis.pens.ac.id/mis142/contents/uploads/${fileName}"),
-      ),
+      body: SfPdfViewer.network(
+          "https://project.mis.pens.ac.id/mis142/contents/uploads/${fileName}"),
     );
   }
 }
