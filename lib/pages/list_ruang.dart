@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peminjaman_ruang/components/inputForm.dart';
+import 'package:peminjaman_ruang/pages/detailRuang.dart';
 import 'package:peminjaman_ruang/pages/login.dart';
 import 'package:peminjaman_ruang/pages/create_ruang.dart';
 import 'package:peminjaman_ruang/utils/api.dart';
@@ -119,214 +120,6 @@ class _ListValueState extends State<ListValue> {
     newData = widget.list;
   }
 
-  String convertDate(time) {
-    if (time == null) {
-      return "Tersedia";
-    } else {
-      var date = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
-      var result = "${date.day}-${date.month}-${date.year}";
-
-      return result;
-    }
-  }
-
-  void confirm(id, name) {
-    AlertDialog alertDialog = AlertDialog(
-      content: Text("Apakah kamu yakin ingin menghapus ${name}"),
-      actions: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text("Batal"),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.yellow,
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            deleteDataRuang(id);
-
-            Navigator.pop(context);
-          },
-          child: const Text("Delete"),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-          ),
-        ),
-      ],
-    );
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alertDialog;
-      },
-    );
-  }
-
-  void viewDetail(value) {
-    AlertDialog alertDialog = AlertDialog(
-      content: Container(
-        height: 570,
-        child: Column(
-          children: [
-            Container(
-                alignment: Alignment.topLeft, child: Text("Nama Ruang :")),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: 1),
-                ),
-              ),
-              padding: const EdgeInsets.all(5.0),
-              child: Text(value['keterangan']),
-            ),
-            const Padding(padding: EdgeInsets.only(top: 10.0)),
-            Container(
-                alignment: Alignment.topLeft, child: Text("Code Ruang :")),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: 1),
-                ),
-              ),
-              padding: const EdgeInsets.all(5.0),
-              child: Text(value['ruang']),
-            ),
-            const Padding(padding: EdgeInsets.only(top: 10.0)),
-            Container(alignment: Alignment.topLeft, child: Text("Pengelola :")),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: 1),
-                ),
-              ),
-              padding: const EdgeInsets.all(5.0),
-              child: Text(value['pengelola'].toString()),
-            ),
-            const Padding(padding: EdgeInsets.only(top: 10.0)),
-            Container(
-                alignment: Alignment.topLeft, child: Text("Kapasitas Ruang :")),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: 1),
-                ),
-              ),
-              padding: const EdgeInsets.all(5.0),
-              child: Text("${value['kapasitas']} Orang"),
-            ),
-            const Padding(padding: EdgeInsets.only(top: 10.0)),
-            Container(alignment: Alignment.topLeft, child: Text("Deskripsi :")),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: 1),
-                ),
-              ),
-              padding: const EdgeInsets.all(5.0),
-              child: Text(value['informasi']),
-            ),
-            const Padding(padding: EdgeInsets.only(top: 10.0)),
-            Container(
-                alignment: Alignment.topLeft,
-                child: Text("Tanggal Awal Off :")),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: 1),
-                ),
-              ),
-              padding: const EdgeInsets.all(5.0),
-              child: Text(convertDate(value['tanggalAwalOff'])),
-            ),
-            const Padding(padding: EdgeInsets.only(top: 10.0)),
-            Container(
-                alignment: Alignment.topLeft,
-                child: Text("Tanggal Akhir Off :")),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: 1),
-                ),
-              ),
-              padding: const EdgeInsets.all(5.0),
-              child: Text(convertDate(value['tanggalAkhirOff'])),
-            ),
-            const Padding(padding: EdgeInsets.only(top: 10.0)),
-            Container(alignment: Alignment.topLeft, child: Text("Status :")),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(width: 1),
-                ),
-              ),
-              padding: const EdgeInsets.all(5.0),
-              child: Text(value['kode'].toString()),
-            ),
-            const Padding(padding: EdgeInsets.only(top: 10.0)),
-          ],
-        ),
-      ),
-      actions: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Icon(Icons.close_outlined),
-        ),
-        widget.role == "admin"
-            ? ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return CreateRuang(
-                      nomor: value['nomor'],
-                      ruang: value['ruang'],
-                      keterangan: value['keterangan'],
-                      pengelola: widget.idRole['NIP'],
-                      kapasitas: value['kapasitas'],
-                      informasi: value['informasi'],
-                      tanggalAwalOff: value['tanggalAwalOff'],
-                      tanggalAkhirOff: value['tanggalAkhirOff'],
-                      kode: value['kode'],
-                    );
-                  }));
-                },
-                child: const Icon(Icons.edit),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.yellow),
-              )
-            : const Padding(padding: EdgeInsets.only(left: 0.0)),
-        widget.role == "admin"
-            ? ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  confirm(value['nomor'], value['keterangan']);
-                },
-                child: const Icon(Icons.delete),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              )
-            : const Padding(padding: EdgeInsets.only(left: 0.0)),
-      ],
-    );
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alertDialog;
-      },
-    );
-  }
-
   void filterData(String value) {
     var result = [];
     if (value.isEmpty) {
@@ -374,7 +167,6 @@ class _ListValueState extends State<ListValue> {
                   padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                   child: Card(
                     elevation: 4,
-                    // color: Colors.amber,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
                     child: ListTile(
@@ -386,7 +178,14 @@ class _ListValueState extends State<ListValue> {
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios),
                       onTap: () {
-                        viewDetail(newData[index]);
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return DetailRuang(
+                            data: newData[index],
+                            role: widget.role,
+                            idRole: widget.idRole,
+                          );
+                        }));
                       },
                     ),
                   ),

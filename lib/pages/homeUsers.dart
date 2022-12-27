@@ -34,7 +34,9 @@ class _HomeUsersState extends State<HomeUsers>
       body: TabBarView(
         controller: controller,
         children: [
-          Beranda(),
+          Beranda(
+            role: "user",
+          ),
           ListRuang(
             role: "user",
           ),

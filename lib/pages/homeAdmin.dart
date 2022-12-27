@@ -35,7 +35,9 @@ class _HomeAdminState extends State<HomeAdmin>
       body: TabBarView(
         controller: controller,
         children: [
-          Beranda(),
+          Beranda(
+            role: "admin",
+          ),
           MasterStatus(),
           ListRuang(
             role: "admin",

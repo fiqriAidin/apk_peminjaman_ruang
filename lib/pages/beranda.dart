@@ -27,7 +27,8 @@ class Months {
 }
 
 class Beranda extends StatefulWidget {
-  Beranda({Key? key}) : super(key: key);
+  Beranda({Key? key, this.role}) : super(key: key);
+  var role;
 
   @override
   State<Beranda> createState() => _BerandaState();
@@ -256,8 +257,7 @@ class _BerandaState extends State<Beranda> {
     // print(DateTime.now().month);
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget viewStatistik() {
     List<charts.Series<Years, String>> series1 = [
       charts.Series(
         id: "Years",
@@ -275,7 +275,143 @@ class _BerandaState extends State<Beranda> {
         measureFn: (Months series, _) => series.count,
       )
     ];
+    return Column(
+      children: [
+        Container(
+          alignment: Alignment.topLeft,
+          padding: EdgeInsets.only(top: 15, left: 20, right: 15),
+          child: const Text(
+            "Statistik Peminjaman",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Container(
+          height: 180,
+          child: PageView(
+            controller: controller,
+            children: [
+              ViewStatistik(
+                text: "Total Pesanan Ruang",
+                data: dataMapTotal,
+                color: Colors.blue,
+                totalValue: totalPesanan == null ? 1 : totalPesanan.toDouble(),
+              ),
+              ViewStatistik(
+                text: "Pesanan Ruang Menunggu",
+                data: dataMapMenunggu,
+                color: Colors.yellow,
+                totalValue: totalPesanan == null ? 1 : totalPesanan.toDouble(),
+              ),
+              ViewStatistik(
+                text: "Pesanan Ruang Ditolak",
+                data: dataMapTolak,
+                color: Colors.red,
+                totalValue: totalPesanan == null ? 1 : totalPesanan.toDouble(),
+              ),
+              ViewStatistik(
+                text: "Pesanan Ruang Disetujui",
+                data: dataMapSetuju,
+                color: Colors.green,
+                totalValue: totalPesanan == null ? 1 : totalPesanan.toDouble(),
+              ),
+            ],
+          ),
+        ),
+        Card(
+          elevation: 5,
+          margin: EdgeInsets.all(15),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Container(
+            padding: EdgeInsets.all(15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: PieChart(
+                    dataMap: dataMap1,
+                    animationDuration: Duration(milliseconds: 1000),
+                    chartLegendSpacing: 5,
+                    chartRadius: MediaQuery.of(context).size.width / 4.5,
+                    chartValuesOptions: ChartValuesOptions(
+                      showChartValuesInPercentage: true,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: PieChart(
+                    dataMap: dataMap2,
+                    animationDuration: Duration(milliseconds: 1000),
+                    chartLegendSpacing: 5,
+                    chartRadius: MediaQuery.of(context).size.width / 4.5,
+                    chartValuesOptions: ChartValuesOptions(
+                      showChartValuesInPercentage: true,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Container(
+          height: 300,
+          child: Card(
+            elevation: 5,
+            margin: EdgeInsets.all(15),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    "Statisktik Peminjaman Ruang Tiap Tahun",
+                  ),
+                  Expanded(
+                    child: charts.BarChart(
+                      series1,
+                      animate: true,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Container(
+          height: 300,
+          child: Card(
+            elevation: 5,
+            margin: EdgeInsets.all(15),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    "Statisktik Peminjaman Ruang Tiap Bulan",
+                  ),
+                  Expanded(
+                    child: charts.BarChart(
+                      series2,
+                      animate: true,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(16, 57, 104, 1),
@@ -347,52 +483,6 @@ class _BerandaState extends State<Beranda> {
                 ),
               ),
             ),
-            Container(
-              padding: EdgeInsets.only(top: 15, left: 20, right: 15),
-              child: const Text(
-                "Statistik Peminjaman",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Container(
-              height: 180,
-              child: PageView(
-                controller: controller,
-                children: [
-                  ViewStatistik(
-                    text: "Total Pesanan Ruang",
-                    data: dataMapTotal,
-                    color: Colors.blue,
-                    totalValue:
-                        totalPesanan == null ? 1 : totalPesanan.toDouble(),
-                  ),
-                  ViewStatistik(
-                    text: "Pesanan Ruang Menunggu",
-                    data: dataMapMenunggu,
-                    color: Colors.yellow,
-                    totalValue:
-                        totalPesanan == null ? 1 : totalPesanan.toDouble(),
-                  ),
-                  ViewStatistik(
-                    text: "Pesanan Ruang Ditolak",
-                    data: dataMapTolak,
-                    color: Colors.red,
-                    totalValue:
-                        totalPesanan == null ? 1 : totalPesanan.toDouble(),
-                  ),
-                  ViewStatistik(
-                    text: "Pesanan Ruang Disetujui",
-                    data: dataMapSetuju,
-                    color: Colors.green,
-                    totalValue:
-                        totalPesanan == null ? 1 : totalPesanan.toDouble(),
-                  ),
-                ],
-              ),
-            ),
             Card(
               elevation: 5,
               margin: EdgeInsets.all(15),
@@ -400,85 +490,88 @@ class _BerandaState extends State<Beranda> {
                   borderRadius: BorderRadius.circular(20)),
               child: Container(
                 padding: EdgeInsets.all(15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
                   children: [
-                    Expanded(
-                      child: PieChart(
-                        dataMap: dataMap1,
-                        animationDuration: Duration(milliseconds: 1000),
-                        chartLegendSpacing: 5,
-                        chartRadius: MediaQuery.of(context).size.width / 4.5,
-                        chartValuesOptions: ChartValuesOptions(
-                          showChartValuesInPercentage: true,
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: const Text(
+                        "Tata Cara Peminjaman Ruang",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: PieChart(
-                        dataMap: dataMap2,
-                        animationDuration: Duration(milliseconds: 1000),
-                        chartLegendSpacing: 5,
-                        chartRadius: MediaQuery.of(context).size.width / 4.5,
-                        chartValuesOptions: ChartValuesOptions(
-                          showChartValuesInPercentage: true,
-                        ),
+                    const Padding(padding: EdgeInsets.only(top: 10)),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: const Text(
+                        "1. Meminta persetujuan wakil direktur untuk melakukan peminjaman ruang di kampus PENS",
+                        style: TextStyle(fontSize: 16.0),
                       ),
                     ),
+                    const Padding(padding: EdgeInsets.only(top: 10)),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: const Text(
+                        "2. Menentuka Ruang yang ingin di pinjam",
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                    ),
+                    const Padding(padding: EdgeInsets.only(top: 10)),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: const Text(
+                        "3. Menenukan waktu peminjaman ruang",
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                    ),
+                    const Padding(padding: EdgeInsets.only(top: 10)),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: const Text(
+                        "4. Melihat apakah ruang yang dipinjam pada waktu yang ditentukan masih tersedia untuk dilakukan peminjaman",
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                    ),
+                    const Padding(padding: EdgeInsets.only(top: 10)),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: const Text(
+                        "5. Mengisi form peminjaman ruang",
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                    ),
+                    const Padding(padding: EdgeInsets.only(top: 10)),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: const Text(
+                        "6. Menyerahkan dokumen persetujuan peminjaman ruang di kampus PENS",
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                    ),
+                    const Padding(padding: EdgeInsets.only(top: 10)),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: const Text(
+                        "7. Menunggu verifikasi pesanan oleh pengurus",
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                    ),
+                    const Padding(padding: EdgeInsets.only(top: 10)),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: const Text(
+                        "8. Dapat mulai menggunakan ruang jika pesanan sudah di setujui oleh pengurus",
+                        style: TextStyle(fontSize: 16.0),
+                      ),
+                    ),
+                    const Padding(padding: EdgeInsets.only(bottom: 10)),
                   ],
                 ),
               ),
             ),
-            Container(
-              height: 300,
-              child: Card(
-                elevation: 5,
-                margin: EdgeInsets.all(15),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        "Statisktik Peminjaman Ruang Tiap Tahun",
-                      ),
-                      Expanded(
-                        child: charts.BarChart(
-                          series1,
-                          animate: true,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              height: 300,
-              child: Card(
-                elevation: 5,
-                margin: EdgeInsets.all(15),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        "Statisktik Peminjaman Ruang Tiap Bulan",
-                      ),
-                      Expanded(
-                        child: charts.BarChart(
-                          series2,
-                          animate: true,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            if (widget.role == "admin") viewStatistik(),
           ])),
         ],
       ),
